@@ -155,11 +155,19 @@ export default function ApplicantList({ companyId }: ApplicantListProps) {
       });
 
       if (response.ok) {
-        setApplications((prevApplications) =>
-          prevApplications.map((app) =>
-            app.id === applicationId ? { ...app, status: newStatus } : app
-          )
-        );
+        // If status is REJECTED, remove from list
+        if (newStatus.toUpperCase() === "REJECTED") {
+          setApplications((prevApplications) =>
+            prevApplications.filter((app) => app.id !== applicationId)
+          );
+        } else {
+          // Otherwise just update the status
+          setApplications((prevApplications) =>
+            prevApplications.map((app) =>
+              app.id === applicationId ? { ...app, status: newStatus } : app
+            )
+          );
+        }
       } else {
         const errorData = await response.json();
         alert(errorData.error || "Failed to update status");
