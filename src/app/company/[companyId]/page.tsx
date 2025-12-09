@@ -145,10 +145,10 @@ export default function CompanyProfilePage() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading company details...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-text-secondary">Loading company details...</p>
         </div>
       </div>
     );
@@ -157,17 +157,17 @@ export default function CompanyProfilePage() {
   // Company not found state
   if (!company) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-4">
+          <h1 className="text-4xl font-bold text-text-primary mb-4">
             Company Not Found
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
+          <p className="text-text-secondary mb-6">
             The company you're looking for doesn't exist or has been removed.
           </p>
           <Link
             href="/"
-            className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+            className="inline-block bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors"
           >
             Back to Home
           </Link>
@@ -178,7 +178,7 @@ export default function CompanyProfilePage() {
 
   // Company profile display
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Check if user is the owner */}
         {user && company.userId === user.id && isEditing ? (
@@ -196,39 +196,39 @@ export default function CompanyProfilePage() {
           // View Mode - Show Company Profile
           <>
             {/* Header Section */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 mb-6">
+            <div className="bg-card border border-border rounded-lg shadow-lg p-8 mb-6">
               <div className="flex items-start gap-6">
                 {/* Company Logo */}
                 {company.logoUrl ? (
                   <img
                     src={company.logoUrl}
                     alt={`${company.name} logo`}
-                    className="w-24 h-24 rounded-lg object-cover border-2 border-gray-200 dark:border-gray-700"
+                    className="w-24 h-24 rounded-lg object-cover border-2 border-border"
                   />
                 ) : (
-                  <div className="w-24 h-24 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold">
+                  <div className="w-24 h-24 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-3xl font-bold">
                     {company.name.charAt(0).toUpperCase()}
                   </div>
                 )}
 
                 {/* Company Name and Basic Info */}
                 <div className="flex-1">
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                  <h1 className="text-3xl font-bold text-text-primary mb-2">
                     {company.name}
                   </h1>
                   {company.legalName && (
-                    <p className="text-gray-600 dark:text-gray-400 mb-2">
+                    <p className="text-text-secondary mb-2">
                       Legal Name: {company.legalName}
                 </p>
               )}
               <div className="flex flex-wrap gap-3 mt-4">
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary border border-primary/20">
                   {company.industry}
                 </span>
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20">
                   {company.companySize} employees
                 </span>
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
                   {company.companyType}
                 </span>
               </div>
@@ -241,7 +241,7 @@ export default function CompanyProfilePage() {
               <button
                 onClick={() => setIsEditing(true)}
                 disabled={isDeleting}
-                className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <svg
                   className="w-5 h-5 mr-2"
@@ -285,68 +285,68 @@ export default function CompanyProfilePage() {
 
         {/* About Section */}
         {company.about && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          <div className="bg-card border border-border rounded-lg shadow-lg p-8 mb-6">
+            <h2 className="text-2xl font-bold text-text-primary mb-4">
               About Us
             </h2>
-            <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">
+            <p className="text-text-secondary leading-relaxed whitespace-pre-line">
               {company.about}
             </p>
           </div>
         )}
 
         {/* Company Details Grid */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+        <div className="bg-card border border-border rounded-lg shadow-lg p-8 mb-6">
+          <h2 className="text-2xl font-bold text-text-primary mb-6">
             Company Details
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Year Founded */}
             <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+              <p className="text-sm font-medium text-text-muted mb-1">
                 Year Founded
               </p>
-              <p className="text-lg text-gray-900 dark:text-white font-semibold">
+              <p className="text-lg text-text-primary font-semibold">
                 {company.yearFounded}
               </p>
             </div>
 
             {/* Registration Number */}
             <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+              <p className="text-sm font-medium text-text-muted mb-1">
                 Registration Number
               </p>
-              <p className="text-lg text-gray-900 dark:text-white font-semibold">
+              <p className="text-lg text-text-primary font-semibold">
                 {company.registrationNumber}
               </p>
             </div>
 
             {/* Industry */}
             <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+              <p className="text-sm font-medium text-text-muted mb-1">
                 Industry
               </p>
-              <p className="text-lg text-gray-900 dark:text-white font-semibold">
+              <p className="text-lg text-text-primary font-semibold">
                 {company.industry}
               </p>
             </div>
 
             {/* Company Size */}
             <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+              <p className="text-sm font-medium text-text-muted mb-1">
                 Company Size
               </p>
-              <p className="text-lg text-gray-900 dark:text-white font-semibold">
+              <p className="text-lg text-text-primary font-semibold">
                 {company.companySize} employees
               </p>
             </div>
 
             {/* Company Type */}
             <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+              <p className="text-sm font-medium text-text-muted mb-1">
                 Company Type
               </p>
-              <p className="text-lg text-gray-900 dark:text-white font-semibold">
+              <p className="text-lg text-text-primary font-semibold">
                 {company.companyType}
               </p>
             </div>
@@ -354,15 +354,15 @@ export default function CompanyProfilePage() {
         </div>
 
         {/* Contact Information */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+        <div className="bg-card border border-border rounded-lg shadow-lg p-8">
+          <h2 className="text-2xl font-bold text-text-primary mb-6">
             Contact Information
           </h2>
           <div className="space-y-4">
             {/* Contact Email */}
             <div className="flex items-center gap-3">
               <svg
-                className="w-6 h-6 text-gray-500 dark:text-gray-400"
+                className="w-6 h-6 text-text-muted"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -375,12 +375,12 @@ export default function CompanyProfilePage() {
                 />
               </svg>
               <div>
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                <p className="text-sm font-medium text-text-muted">
                   Email
                 </p>
                 <a
                   href={`mailto:${company.contactEmail}`}
-                  className="text-lg text-blue-600 dark:text-blue-400 hover:underline"
+                  className="text-lg text-primary hover:underline"
                 >
                   {company.contactEmail}
                 </a>
@@ -391,7 +391,7 @@ export default function CompanyProfilePage() {
             {company.website && (
               <div className="flex items-center gap-3">
                 <svg
-                  className="w-6 h-6 text-gray-500 dark:text-gray-400"
+                  className="w-6 h-6 text-text-muted"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -404,14 +404,14 @@ export default function CompanyProfilePage() {
                   />
                 </svg>
                 <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  <p className="text-sm font-medium text-text-muted">
                     Website
                   </p>
                   <a
                     href={company.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-lg text-blue-600 dark:text-blue-400 hover:underline"
+                    className="text-lg text-primary hover:underline"
                   >
                     {company.website}
                   </a>
@@ -425,7 +425,7 @@ export default function CompanyProfilePage() {
         <div className="mt-8 text-center">
           <Link
             href="/"
-            className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline"
+            className="inline-flex items-center text-primary hover:underline"
           >
             <svg
               className="w-5 h-5 mr-2"

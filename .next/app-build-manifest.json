@@ -55,6 +55,16 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/api/applications/[applicationId]/route.js"
+    ],
+    "/company/[companyId]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/company/[companyId]/page.js"
+    ],
+    "/api/companies/[companyId]/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/companies/[companyId]/route.js"
     ]
   }
 }
