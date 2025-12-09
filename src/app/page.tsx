@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import JobCard from '@/components/cards/job-card';
 import JobModal from '@/components/job-modal';
@@ -9,7 +9,7 @@ import FilterSidebar from '@/components/filter-side-bar';
 import { HeroSection } from '@/components/home/hero-section';
 import { Loader2 } from 'lucide-react';
 
-export default function Home() {
+function HomeContent() {
   const [fetchedJobs, setFetchedJobs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
@@ -197,4 +197,19 @@ function Briefcase(props: React.SVGProps<SVGSVGElement>) {
       <rect width="20" height="14" x="2" y="6" rx="2" />
     </svg>
   )
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <p className="text-text-secondary">Loading...</p>
+        </div>
+      </div>
+    }>
+      <HomeContent />
+    </Suspense>
+  );
 }
