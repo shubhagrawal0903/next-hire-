@@ -1,0 +1,9 @@
+{
+  "/api/applications/company/[companyId]/route": "app/api/applications/company/[companyId]/route.js",
+  "/page": "app/page.js",
+  "/my-applications/page": "app/my-applications/page.js",
+  "/post-job/page": "app/post-job/page.js",
+  "/profile/[[...user_profile]]/page": "app/profile/[[...user_profile]]/page.js",
+  "/my-jobs/page": "app/my-jobs/page.js",
+  "/dashboard/page": "app/dashboard/page.js"
+}

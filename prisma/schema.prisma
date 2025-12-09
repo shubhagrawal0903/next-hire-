@@ -1,0 +1,131 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  name               String
+  legalName          String?
+  userId             String 
+  registrationNumber String   @unique
+  logoUrl            String?
+  website            String?
+  industry           String
+  companySize        String
+  about              String?
+  contactEmail       String   @unique
+  yearFounded        Int
+  companyType        String
+  isVerified         Boolean  @default(false)
+  
+  // Verification Documents
+  registrationCertificateUrl String?  // Company registration certificate
+  taxCertificateUrl          String?  // Tax registration certificate
+  incorporationCertificateUrl String? // Certificate of incorporation
+  additionalDocumentUrl      String?  // Any additional document
+  
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relations
+  jobs               Job[] // One company can have many jobs
+
+  // Indexes for faster lookups
+  @@index([isVerified])
+}
+
+model Job {
+  id                 String    @id @default(auto()) @map("_id") @db.ObjectId
+  title              String
+  description        String
+  companyId          String    @db.ObjectId // Foreign key to Company
+  location           String
+  employmentType     String
+  salaryMin          Int?
+  salaryMax          Int?
+  salaryCurrency     String?
+  requirements       String[]
+  responsibilities   String[]
+  applyLink          String?
+  postedAt           DateTime  @default(now())
+  expiresAt          DateTime?
+  status             String    @default("active")
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  userId             String    // <-- Added: Clerk User ID who posted this job
+
+  // Relations
+  company            Company      @relation(fields: [companyId], references: [id], onDelete: Cascade) // Job belongs to one Company
+  applications       Application[] // One job can have many applications
+
+  // Indexes for faster lookups
+  @@index([userId]) // <-- Added index for userId
+  @@index([companyId])
+  @@index([status])
+  @@index([employmentType])
+}
+
+model Application {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  jobId           String    @db.ObjectId // Foreign key to Job
+  userId          String    // Clerk User ID of the applicant (Job Seeker)
+  applicantName   String
+  applicantEmail  String
+  resumeUrl       String    // Link to uploaded resume (e.g., Cloudinary)
+  coverLetter     String?   // Optional cover letter
+  status          String    @default("Pending") // "Pending", "Reviewed", "Interview", "Rejected", etc.
+  atsScore        Int?      @default(0)
+  
+  // Interview Scheduling Fields
+  interviewDate   DateTime? // Scheduled interview date and time
+  interviewLink   String?   // Google Meet / Zoom link
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  job             Job          @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  applicant       UserProfile  @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  
+  @@unique([jobId, userId])
+  
+  
+  @@index([userId])
+  @@index([jobId])
+  @@index([status])
+}
+
+model UserProfile {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String   @unique // Clerk User ID - unique for each user
+  
+  // Profile fields
+  bio          String?
+  location     String?
+  headline     String? // e.g., "Senior Frontend Developer at XYZ"
+  resumeUrl    String?  // Resume file URL from Cloudinary
+  skills       String[] // Array of user's skills
+  experience   Json[]   // Array of job experience objects (defaults to empty array)
+  education    Json[]   // Array of education objects (defaults to empty array)
+  socialLinks  Json?    // Links like LinkedIn, GitHub, etc.
+  
+  // Relations
+  applications Application[] // One user can have many applications
+  
+  // Timestamps
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
