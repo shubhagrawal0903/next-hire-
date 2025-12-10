@@ -16,9 +16,15 @@ export async function GET(request: Request) {
     }
 
     // Fetch all applications submitted by the logged-in user
+    // Only include applications where the job has a valid company
     const applications = await prisma.application.findMany({
       where: {
         userId: userId,
+        job: {
+          company: {
+            is: {},
+          },
+        },
       },
       include: {
         job: {

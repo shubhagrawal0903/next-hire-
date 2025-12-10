@@ -91,6 +91,12 @@ export async function GET(request: Request) {
               not: userId,
             },
           },
+          // Only jobs with valid company
+          {
+            company: {
+              is: {},
+            },
+          },
         ],
       },
       include: {

@@ -48,6 +48,14 @@ export async function GET(
       );
     }
 
+    // Check if job has a valid company (prevent orphaned job data)
+    if (!job.company) {
+      return NextResponse.json(
+        { error: "Job company data is unavailable" },
+        { status: 404 }
+      );
+    }
+
     // Return the job data with company details
     return NextResponse.json(job, { status: 200 });
 
