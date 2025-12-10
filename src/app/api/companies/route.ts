@@ -42,8 +42,19 @@ export async function POST(request: Request) {
 
     const body = await request.json();
 
-    
-    const { name, registrationNumber, contactEmail, yearFounded, ...otherData } = body;
+    // Explicitly extract all fields including certificate URLs
+    const { 
+      name, 
+      registrationNumber, 
+      contactEmail, 
+      yearFounded,
+      registrationCertificateUrl,
+      taxCertificateUrl,
+      incorporationCertificateUrl,
+      additionalDocumentUrl,
+      ...otherData 
+    } = body;
+
     if (!name || !registrationNumber || !contactEmail) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -51,15 +62,36 @@ export async function POST(request: Request) {
       );
     }
 
+    console.log('Certificate URLs received:', {
+      registrationCertificateUrl,
+      taxCertificateUrl,
+      incorporationCertificateUrl,
+      additionalDocumentUrl
+    });
+
     const newCompany = await prisma.company.create({
       data: {
         name,
         registrationNumber,
         contactEmail,
         yearFounded: yearFounded ? parseInt(yearFounded) : undefined,
+        registrationCertificateUrl: registrationCertificateUrl || undefined,
+        taxCertificateUrl: taxCertificateUrl || undefined,
+        incorporationCertificateUrl: incorporationCertificateUrl || undefined,
+        additionalDocumentUrl: additionalDocumentUrl || undefined,
         ...otherData,
         userId: userId, 
       },
+    });
+
+    console.log('Company created with certificates:', {
+      id: newCompany.id,
+      hasCertificates: {
+        registration: !!newCompany.registrationCertificateUrl,
+        tax: !!newCompany.taxCertificateUrl,
+        incorporation: !!newCompany.incorporationCertificateUrl,
+        additional: !!newCompany.additionalDocumentUrl
+      }
     });
 
     // Upgrade user role to COMPANY_ERP if they are currently JOB_SEEKER or have no role
