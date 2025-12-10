@@ -30,7 +30,7 @@ export function HeroSection() {
 
                     <div className="space-y-4">
                         <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-text-primary">
-                            Find your <span className="text-primary bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">dream job</span> <br />
+                            Find your <span className="text-text-primary">dream job</span> <br />
                             with confidence
                         </h1>
                         <p className="text-lg md:text-xl text-text-secondary max-w-2xl mx-auto leading-relaxed">
