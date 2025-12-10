@@ -145,12 +145,18 @@ export async function GET(request: Request) {
       ];
     }
 
-    // Get total count of jobs matching the filters
+    // Get total count of jobs matching the filters (before fetching with company include)
     const totalJobs = await prisma.job.count({ where });
 
     // Fetch jobs with selected company information and pagination
+    // Only fetch jobs that have a valid company relation
     const jobs = await prisma.job.findMany({
-      where,
+      where: {
+        ...where,
+        company: {
+          is: {},
+        },
+      },
       include: {
         company: { // Include related company data
           select: { // Select only necessary fields
