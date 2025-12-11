@@ -8,28 +8,34 @@ export const clerkAppearance: Appearance = {
     // Primary Color (Zinc-900 or Zinc-50 based on mode)
     colorPrimary: "hsl(var(--primary))",
 
-    // Backgrounds
-    colorBackground: "hsl(var(--card))",
+    // Backgrounds - Remove gradient, use solid background
+    colorBackground: "hsl(var(--background))",
     colorInputBackground: "hsl(var(--background))",
 
     // Text
-    colorText: "hsl(var(--foreground))",
-    colorTextSecondary: "hsl(var(--muted-foreground))",
-    colorInputText: "hsl(var(--foreground))",
+    colorText: "hsl(var(--text-primary))",
+    colorTextSecondary: "hsl(var(--text-secondary))",
+    colorInputText: "hsl(var(--text-primary))",
 
     // Borders
     borderColor: "hsl(var(--border))",
-    borderRadius: "0.75rem", // rounded-xl
+    borderRadius: "0.5rem", // rounded-lg
 
     // Fonts
     fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
   },
 
   elements: {
-    // Main Card
+    // Root element - Remove gradient background
+    rootBox: {
+      background: "hsl(var(--background))",
+    },
+
+    // Main Card - Clean design
     card: {
-      boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)", // shadow-md
+      boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)", // shadow-sm
       border: "1px solid hsl(var(--border))",
+      background: "hsl(var(--card))",
     },
 
     // Header
@@ -102,15 +108,29 @@ export const clerkAppearance: Appearance = {
       },
     },
     identityPreviewText: {
-      color: "hsl(var(--foreground))",
+      color: "hsl(var(--text-primary))",
     },
     invitationMessageContainer: {
-      backgroundColor: "hsl(var(--secondary))",
+      backgroundColor: "hsl(var(--card))",
       borderColor: "hsl(var(--border))",
     },
     invitationMessageText: {
-      color: "hsl(var(--secondary-foreground))",
+      color: "hsl(var(--text-secondary))",
     },
+
+    // Additional elements for clean theme
+    modalContent: {
+      background: "hsl(var(--background))",
+    },
+    userButtonPopoverCard: {
+      background: "hsl(var(--card))",
+      borderColor: "hsl(var(--border))",
+    },
+  },
+  
+  layout: {
+    socialButtonsPlacement: "bottom",
+    socialButtonsVariant: "blockButton",
   },
 
   layout: {

@@ -3,5 +3,7 @@
   "/api/jobs/recommendations/route": "app/api/jobs/recommendations/route.js",
   "/page": "app/page.js",
   "/post-job/page": "app/post-job/page.js",
+  "/my-jobs/page": "app/my-jobs/page.js",
+  "/about/page": "app/about/page.js",
   "/dashboard/page": "app/dashboard/page.js"
 }

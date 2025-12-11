@@ -14,12 +14,12 @@ export default async function ProfilePage() {
     const profile = await getUserProfile();
 
     return (
-        <div className="min-h-screen bg-black text-white pb-20">
+        <div className="min-h-screen bg-background text-text-primary pb-20">
             {/* Header */}
-            <div className="bg-zinc-900 border-b border-zinc-800">
+            <div className="bg-card border-b border-border">
                 <div className="container mx-auto px-4 py-8 max-w-4xl">
                     <div className="flex items-center space-x-6">
-                        <div className="relative h-24 w-24 rounded-full overflow-hidden border-4 border-zinc-800 shadow-xl">
+                        <div className="relative h-24 w-24 rounded-full overflow-hidden border-4 border-border shadow-xl">
                             <Image
                                 src={user.imageUrl}
                                 alt={user.fullName || 'User'}
@@ -28,10 +28,10 @@ export default async function ProfilePage() {
                             />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-bold text-white mb-1">
+                            <h1 className="text-3xl font-bold text-text-primary mb-1">
                                 {user.fullName}
                             </h1>
-                            <p className="text-zinc-400">
+                            <p className="text-text-secondary">
                                 {user.primaryEmailAddress?.emailAddress}
                             </p>
                         </div>
@@ -42,8 +42,8 @@ export default async function ProfilePage() {
             {/* Main Content */}
             <div className="container mx-auto px-4 py-8 max-w-4xl">
                 <div className="mb-8">
-                    <h2 className="text-2xl font-semibold text-white mb-2">My Profile</h2>
-                    <p className="text-zinc-400">
+                    <h2 className="text-2xl font-semibold text-text-primary mb-2">My Profile</h2>
+                    <p className="text-text-secondary">
                         Manage your personal information, skills, and resume.
                     </p>
                 </div>

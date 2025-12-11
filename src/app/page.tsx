@@ -1,15 +1,18 @@
 "use client";
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+import { useUser } from '@clerk/nextjs';
 import JobCard from '@/components/cards/job-card';
 import JobModal from '@/components/job-modal';
 import { Job } from '@/types/job';
 import RecommendedJobs from '@/components/RecommendedJobs';
 import FilterSidebar from '@/components/filter-side-bar';
 import { HeroSection } from '@/components/home/hero-section';
+import { LandingHeroSection } from '@/components/home/landing-hero-section';
 import { Loader2 } from 'lucide-react';
 
 function HomeContent() {
+  const { isSignedIn, isLoaded } = useUser();
   const [fetchedJobs, setFetchedJobs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
@@ -72,15 +75,32 @@ function HomeContent() {
   const hasPrevPage = page > 1;
   const hasNextPage = page * JOBS_PER_PAGE < totalJobs;
 
+  // Show landing page for non-logged-in users
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!isSignedIn) {
+    return (
+      <div className="min-h-screen bg-background">
+        <LandingHeroSection />
+      </div>
+    );
+  }
+
   return (
-    <main className="min-h-screen bg-background" role="main">
+    <div className="min-h-screen bg-background">
       <HeroSection />
 
       <div className="container mx-auto px-4 py-8 lg:py-12 max-w-screen-2xl">
         <div className="flex flex-col lg:flex-row gap-8">
 
           {/* Sidebar */}
-          <aside className="w-full lg:w-72 flex-shrink-0">
+          <aside className="w-full lg:w-72 shrink-0">
             <div className="sticky top-24 space-y-6">
               <FilterSidebar onTypeChange={setEmploymentType} />
 
@@ -175,7 +195,7 @@ function HomeContent() {
 
         <JobModal job={selectedJob} open={modalOpen} onClose={() => setModalOpen(false)} />
       </div>
-    </main>
+    </div>
   );
 }
 

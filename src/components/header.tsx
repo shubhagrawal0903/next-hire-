@@ -51,27 +51,16 @@ export default function Header() {
     return (
         <header className="h-16 px-4 lg:px-6 bg-header border-b border-border flex justify-between items-center relative">
             {/* Logo */}
-            {/* Logo */}
-            <Link href={'/'} className="flex items-center gap-3 flex-shrink-0 group">
-                {/* 1. Logo Image */}
+            <Link href={'/'} className="flex items-center gap-3 shrink-0">
                 <img
                     src="/logo.jpg"
                     alt="Next Hire"
-                    className="h-10 w-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-all"
+                    className="h-12 w-12 rounded-lg object-cover"
                 />
-
-                {/* 2. Brand Name Text */}
-                <span className="font-bold text-xl tracking-tight text-text-primary hidden sm:block">
-                    Next Hire
-                </span>
+                <span className="text-2xl font-bold text-text-primary">Next-Hire</span>
             </Link>
             {/* Navigation Links - Desktop */}
             <nav className="hidden md:flex items-center gap-6">
-                {/* Always show Jobs link */}
-                <Link href="/" className="text-nav-link hover:text-nav-link-hover font-medium transition-nh">
-                    Jobs
-                </Link>
-
                 {/* Show based on role and auth status */}
                 {isLoaded && (
                     <>
@@ -85,17 +74,29 @@ export default function Header() {
                         {/* Job Seeker Links */}
                         {isSignedIn && role === 'JOB_SEEKER' && (
                             <>
+                                <Link href="/" className="text-nav-link hover:text-nav-link-hover font-medium transition-nh">
+                                    Jobs
+                                </Link>
                                 <Link href="/my-applications" className="text-nav-link hover:text-nav-link-hover font-medium transition-nh">
                                     My Applications
                                 </Link>
-                                <Link href="/post-job" className="text-nav-link hover:text-nav-link-hover font-medium transition-nh">
-                                    Post Job
+                            </>
+                        )}
+
+                        {/* User role Links */}
+                        {isSignedIn && role === 'user' && (
+                            <>
+                                <Link href="/" className="text-nav-link hover:text-nav-link-hover font-medium transition-nh">
+                                    Jobs
+                                </Link>
+                                <Link href="/my-applications" className="text-nav-link hover:text-nav-link-hover font-medium transition-nh">
+                                    My Applications
                                 </Link>
                             </>
                         )}
 
                         {/* Company Rep Links */}
-                        {isSignedIn && role === 'COMPANY_ERP' && (
+                        {isSignedIn && (role === 'COMPANY_ERP' || role === 'client') && (
                             <>
                                 <Link href="/dashboard" className="text-nav-link hover:text-nav-link-hover font-medium transition-nh">
                                     Dashboard
@@ -112,37 +113,35 @@ export default function Header() {
                         {/* Show for users without role or new users - treat as Job Seeker */}
                         {isSignedIn && !role && (
                             <>
+                                <Link href="/" className="text-nav-link hover:text-nav-link-hover font-medium transition-nh">
+                                    Jobs
+                                </Link>
                                 <Link href="/my-applications" className="text-nav-link hover:text-nav-link-hover font-medium transition-nh">
                                     My Applications
-                                </Link>
-                                <Link href="/post-job" className="text-nav-link hover:text-nav-link-hover font-medium transition-nh">
-                                    Post Job
                                 </Link>
                             </>
                         )}
                     </>
                 )}
 
-                {/* Always show About */}
-                <Link href="/about" className="text-nav-link hover:text-nav-link-hover font-medium transition-nh">
-                    About
-                </Link>
             </nav>
 
             {/* Desktop Right Section */}
             <div className="hidden md:flex items-center gap-4">
-
-                <ModeToggle />
+                {/* Always show About */}
+                <Link href="/about" className="text-nav-link hover:text-nav-link-hover font-medium transition-nh">
+                    About
+                </Link>
 
                 <SignedOut>
                     <div className="flex items-center gap-2">
                         <SignInButton mode="modal">
-                            <button className="px-4 py-2 text-sm text-text-secondary hover:text-text-primary transition-nh">
+                            <button className="px-4 py-2 text-sm text-text-secondary hover:text-text-primary font-medium transition-nh">
                                 Sign In
                             </button>
                         </SignInButton>
                         <SignUpButton mode="modal">
-                            <button className="nh-button-primary px-4 py-2 text-sm rounded-lg transition-nh shadow-sm hover:shadow-md">
+                            <button className="nh-button-primary px-4 py-2 text-sm font-medium rounded-lg transition-nh shadow-sm hover:shadow-md">
                                 Sign Up
                             </button>
                         </SignUpButton>
@@ -174,7 +173,7 @@ export default function Header() {
                                     {user?.firstName || 'User'}
                                 </p>
                                 <p className="text-[10px] text-text-muted leading-tight truncate max-w-[80px]">
-                                    {role === 'ADMIN' ? 'Admin' : role === 'COMPANY_ERP' ? 'Company' : 'Job Seeker'}
+                                    {role === 'ADMIN' ? 'Admin' : role === 'COMPANY_ERP' ? 'Company' : 'User'}
                                 </p>
                             </div>
                             <ChevronDown
@@ -205,7 +204,7 @@ export default function Header() {
                                         {user?.primaryEmailAddress?.emailAddress}
                                     </p>
                                     <div className="mt-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
-                                        {role === 'ADMIN' ? 'Administrator' : role === 'COMPANY_ERP' ? 'Company Account' : 'Job Seeker'}
+                                        {role === 'ADMIN' ? 'Administrator' : role === 'COMPANY_ERP' ? 'Company Account' : 'User'}
                                     </div>
                                 </div>
 
@@ -247,6 +246,8 @@ export default function Header() {
                         )}
                     </div>
                 </SignedIn>
+
+                <ModeToggle />
             </div>
 
             {/* Mobile Right Section */}
@@ -274,15 +275,6 @@ export default function Header() {
                     <div className="px-4 py-4 space-y-4">
                         {/* Navigation Links */}
                         <nav className="space-y-2">
-                            {/* Always show Jobs link */}
-                            <Link
-                                href="/"
-                                className="block px-3 py-2 text-text-primary hover:bg-surface/80 rounded-md transition-nh"
-                                onClick={() => setShowMobileMenu(false)}
-                            >
-                                Jobs
-                            </Link>
-
                             {/* Show based on role and auth status */}
                             {isLoaded && (
                                 <>
@@ -301,24 +293,44 @@ export default function Header() {
                                     {isSignedIn && role === 'JOB_SEEKER' && (
                                         <>
                                             <Link
+                                                href="/"
+                                                className="block px-3 py-2 text-text-primary hover:bg-surface/80 rounded-md transition-nh"
+                                                onClick={() => setShowMobileMenu(false)}
+                                            >
+                                                Jobs
+                                            </Link>
+                                            <Link
                                                 href="/my-applications"
                                                 className="block px-3 py-2 text-text-primary hover:bg-surface/80 rounded-md transition-nh"
                                                 onClick={() => setShowMobileMenu(false)}
                                             >
                                                 My Applications
                                             </Link>
+                                        </>
+                                    )}
+
+                                    {/* User role Links */}
+                                    {isSignedIn && role === 'user' && (
+                                        <>
                                             <Link
-                                                href="/post-job"
+                                                href="/"
                                                 className="block px-3 py-2 text-text-primary hover:bg-surface/80 rounded-md transition-nh"
                                                 onClick={() => setShowMobileMenu(false)}
                                             >
-                                                Post Job
+                                                Jobs
+                                            </Link>
+                                            <Link
+                                                href="/my-applications"
+                                                className="block px-3 py-2 text-text-primary hover:bg-surface/80 rounded-md transition-nh"
+                                                onClick={() => setShowMobileMenu(false)}
+                                            >
+                                                My Applications
                                             </Link>
                                         </>
                                     )}
 
                                     {/* Company Rep Links */}
-                                    {isSignedIn && role === 'COMPANY_ERP' && (
+                                    {isSignedIn && (role === 'COMPANY_ERP' || role === 'client') && (
                                         <>
                                             <Link
                                                 href="/dashboard"
@@ -348,25 +360,27 @@ export default function Header() {
                                     {isSignedIn && !role && (
                                         <>
                                             <Link
+                                                href="/"
+                                                className="block px-3 py-2 text-text-primary hover:bg-surface/80 rounded-md transition-nh"
+                                                onClick={() => setShowMobileMenu(false)}
+                                            >
+                                                Jobs
+                                            </Link>
+                                            <Link
                                                 href="/my-applications"
                                                 className="block px-3 py-2 text-text-primary hover:bg-surface/80 rounded-md transition-nh"
                                                 onClick={() => setShowMobileMenu(false)}
                                             >
                                                 My Applications
                                             </Link>
-                                            <Link
-                                                href="/post-job"
-                                                className="block px-3 py-2 text-text-primary hover:bg-surface/80 rounded-md transition-nh"
-                                                onClick={() => setShowMobileMenu(false)}
-                                            >
-                                                Post Job
-                                            </Link>
                                         </>
                                     )}
                                 </>
                             )}
+                        </nav>
 
-                            {/* Always show About */}
+                        {/* About Section */}
+                        <div className="px-3 py-2 border-t border-border">
                             <Link
                                 href="/about"
                                 className="block px-3 py-2 text-text-primary hover:bg-surface/80 rounded-md transition-nh"
@@ -374,9 +388,7 @@ export default function Header() {
                             >
                                 About
                             </Link>
-                        </nav>
-
-
+                        </div>
 
                         {/* Auth Section */}
                         <div className="px-3 pt-4 border-t border-border">
