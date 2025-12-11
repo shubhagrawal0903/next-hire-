@@ -43,9 +43,20 @@ export default function AuthCallback() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-        <p className="mt-4 text-text-secondary">Setting up your account...</p>
+      <div className="text-center animate-fade-in">
+        <div className="relative inline-flex">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary/20 border-t-primary mx-auto"></div>
+          <div className="absolute inset-0 rounded-full h-16 w-16 border-4 border-transparent border-t-primary/40 animate-pulse"></div>
+        </div>
+        <div className="mt-6 space-y-2">
+          <p className="text-lg font-medium text-text-primary animate-pulse">Setting up your account</p>
+          <p className="text-sm text-text-secondary">Please wait a moment...</p>
+        </div>
+        <div className="mt-8 flex justify-center gap-1">
+          <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0s' }}></div>
+          <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+          <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+        </div>
       </div>
     </div>
   );
