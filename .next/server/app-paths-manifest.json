@@ -1,7 +1,7 @@
 {
   "/api/jobs/route": "app/api/jobs/route.js",
-  "/api/jobs/recommendations/route": "app/api/jobs/recommendations/route.js",
   "/page": "app/page.js",
   "/admin/page": "app/admin/page.js",
+  "/about/page": "app/about/page.js",
   "/sign-up/[[...sign-up]]/page": "app/sign-up/[[...sign-up]]/page.js"
 }

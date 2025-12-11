@@ -169,15 +169,6 @@ export default function AboutPage() {
           <p className="text-xl text-text-secondary max-w-xl mx-auto">
             Join thousands of users who have already upgraded their career journey with Next Hire.
           </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-            <Link href="/search" className="px-8 py-4 bg-primary text-primary-foreground font-bold rounded-full hover:bg-primary/90 transition-transform hover:-translate-y-1 shadow-lg flex items-center justify-center gap-2">
-              Find a Job <ArrowRight className="w-5 h-5" />
-            </Link>
-            <Link href="/post-job" className="px-8 py-4 bg-surface text-text-primary font-bold rounded-full border border-border hover:bg-surface/80 transition-transform hover:-translate-y-1 shadow-md">
-              Post a Job
-            </Link>
-          </div>
         </div>
       </section>
     </div>
