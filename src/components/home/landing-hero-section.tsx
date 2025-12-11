@@ -79,17 +79,15 @@ export function LandingHeroSection() {
                                     : "border-border bg-card hover:border-primary/50 hover:shadow-xl"
                             } ${isSubmitting ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                         >
-                            {selectedRole === "user" && (
-                                <div className="absolute top-4 right-4">
-                                    <CheckCircle2 className="w-6 h-6 text-primary" />
-                                </div>
-                            )}
-
                             <div className="flex items-start justify-between mb-4">
                                 <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                                     <User className="w-6 h-6 text-primary" />
                                 </div>
-                                <ArrowRight className="w-5 h-5 text-text-secondary group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                                {selectedRole === "user" ? (
+                                    <CheckCircle2 className="w-6 h-6 text-primary" />
+                                ) : (
+                                    <ArrowRight className="w-5 h-5 text-text-secondary group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                                )}
                             </div>
 
                             <h3 className="text-xl font-bold text-text-primary mb-2">I'm Looking for a Job</h3>
@@ -130,17 +128,15 @@ export function LandingHeroSection() {
                                     : "border-border bg-card hover:border-primary/50 hover:shadow-xl"
                             } ${isSubmitting ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                         >
-                            {selectedRole === "client" && (
-                                <div className="absolute top-4 right-4">
-                                    <CheckCircle2 className="w-6 h-6 text-primary" />
-                                </div>
-                            )}
-
                             <div className="flex items-start justify-between mb-4">
                                 <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                                     <Building2 className="w-6 h-6 text-primary" />
                                 </div>
-                                <ArrowRight className="w-5 h-5 text-text-secondary group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                                {selectedRole === "client" ? (
+                                    <CheckCircle2 className="w-6 h-6 text-primary" />
+                                ) : (
+                                    <ArrowRight className="w-5 h-5 text-text-secondary group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                                )}
                             </div>
 
                             <h3 className="text-xl font-bold text-text-primary mb-2">I'm Hiring Talent</h3>

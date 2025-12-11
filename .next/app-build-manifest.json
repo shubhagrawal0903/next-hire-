@@ -26,75 +26,20 @@
       "static/chunks/main-app.js",
       "static/chunks/app/sign-up/[[...sign-up]]/page.js"
     ],
-    "/sign-in/[[...sign-in]]/page": [
+    "/admin/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/sign-in/[[...sign-in]]/page.js"
+      "static/chunks/app/admin/page.js"
     ],
-    "/my-profile/page": [
+    "/api/admin/users/route": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/my-profile/page.js"
+      "static/chunks/app/api/admin/users/route.js"
     ],
-    "/profile/[[...user_profile]]/page": [
+    "/api/admin/companies/route": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/profile/[[...user_profile]]/page.js"
-    ],
-    "/api/user/profile/route": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/api/user/profile/route.js"
-    ],
-    "/api/applications/apply/[jobId]/route": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/api/applications/apply/[jobId]/route.js"
-    ],
-    "/my-applications/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/my-applications/page.js"
-    ],
-    "/api/applications/my-applications/route": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/api/applications/my-applications/route.js"
-    ],
-    "/post-job/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/post-job/page.js"
-    ],
-    "/api/companies/route": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/api/companies/route.js"
-    ],
-    "/dashboard/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/dashboard/layout.js"
-    ],
-    "/dashboard/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/dashboard/page.js"
-    ],
-    "/api/applications/company/[companyId]/route": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/api/applications/company/[companyId]/route.js"
-    ],
-    "/my-jobs/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/my-jobs/page.js"
-    ],
-    "/about/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/about/page.js"
+      "static/chunks/app/api/admin/companies/route.js"
     ]
   }
 }
