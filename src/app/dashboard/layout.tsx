@@ -16,8 +16,8 @@ export default function DashboardLayout({
     if (isLoaded) {
       const role = user?.publicMetadata?.role as string | undefined;
       
-      // If user is not a COMPANY_ERP, redirect to homepage
-      if (role !== 'COMPANY_ERP') {
+      // If user is not a company (COMPANY_ERP or client), redirect to homepage
+      if (role !== 'COMPANY_ERP' && role !== 'client') {
         redirect('/');
       }
     }
@@ -36,7 +36,7 @@ export default function DashboardLayout({
 
   // Check role again before rendering (defense in depth)
   const role = user?.publicMetadata?.role as string | undefined;
-  if (role !== 'COMPANY_ERP') {
+  if (role !== 'COMPANY_ERP' && role !== 'client') {
     return null; // Will redirect via useEffect
   }
 

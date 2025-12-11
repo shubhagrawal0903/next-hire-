@@ -24,6 +24,7 @@ function HomeContent() {
   const searchParams = useSearchParams();
   const search = searchParams?.get('search') || "";
   const page = parseInt(searchParams.get('page') || '1');
+  const browse = searchParams?.get('browse') || "";
 
   const router = useRouter();
   const pathname = usePathname();
@@ -75,7 +76,7 @@ function HomeContent() {
   const hasPrevPage = page > 1;
   const hasNextPage = page * JOBS_PER_PAGE < totalJobs;
 
-  // Show landing page for non-logged-in users
+  // Show landing page only on initial visit (no search params)
   if (!isLoaded) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -84,7 +85,8 @@ function HomeContent() {
     );
   }
 
-  if (!isSignedIn) {
+  // Show landing page only if not signed in AND no search/filters/browse
+  if (!isSignedIn && !search && !employmentType && page === 1 && !browse) {
     return (
       <div className="min-h-screen bg-background">
         <LandingHeroSection />

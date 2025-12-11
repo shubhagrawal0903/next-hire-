@@ -36,8 +36,17 @@ export default function AuthCallback() {
         });
       }
     } else {
-      // No role selection, just go to home
-      router.push('/');
+      // No localStorage role - user is signing in (not signing up)
+      // Check their existing role and redirect accordingly
+      const userRole = user?.publicMetadata?.role as string | undefined;
+      
+      if (userRole === 'client' || userRole === 'COMPANY_ERP') {
+        router.push('/dashboard');
+      } else if (userRole === 'admin' || userRole === 'ADMIN') {
+        router.push('/admin');
+      } else {
+        router.push('/'); // Jobs page for users/job seekers
+      }
     }
   }, [isLoaded, user, router]);
 

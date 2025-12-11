@@ -46,7 +46,7 @@ export default function AdminPage() {
   }
 
   // Signed in but not admin
-  if (role !== "ADMIN") {
+  if (role !== "ADMIN" && role !== "admin") {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background p-4">
         <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-8 text-center max-w-md shadow-sm">

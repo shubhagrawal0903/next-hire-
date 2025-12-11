@@ -94,19 +94,19 @@ export async function POST(request: Request) {
       }
     });
 
-    // Upgrade user role to COMPANY_ERP if they are currently JOB_SEEKER or have no role
-    if (!currentRole || currentRole === 'JOB_SEEKER') {
+    // Upgrade user role to client if they are currently user/JOB_SEEKER or have no role
+    if (!currentRole || currentRole === 'JOB_SEEKER' || currentRole === 'user') {
       try {
-        console.log(`Upgrading user ${userId} role from '${currentRole || 'not set'}' to 'COMPANY_ERP'`);
+        console.log(`Upgrading user ${userId} role from '${currentRole || 'not set'}' to 'client'`);
         await client.users.updateUserMetadata(userId, {
           publicMetadata: {
-            role: 'COMPANY_ERP'
+            role: 'client'
           }
         });
-        console.log(`Successfully upgraded user ${userId} to COMPANY_ERP`);
+        console.log(`Successfully upgraded user ${userId} to client`);
       } catch (roleUpgradeError) {
         // Log error but don't block the response since company was created
-        console.error(`Failed to upgrade user ${userId} to COMPANY_ERP:`, roleUpgradeError);
+        console.error(`Failed to upgrade user ${userId} to client:`, roleUpgradeError);
       }
     }
 

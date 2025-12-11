@@ -109,7 +109,7 @@ export default function AddCompanyForm() {
         alert('Company created successfully! Redirecting to dashboard...');
         // Redirect to dashboard after successful company creation
         setTimeout(() => {
-          router.push('/dashboard');
+          window.location.href = '/dashboard'; // Use hard redirect to ensure role refresh
         }, 1500);
       } else if (response.status === 409) {
         const errorData = await response.json();

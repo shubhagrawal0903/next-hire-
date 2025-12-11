@@ -21,10 +21,10 @@ export async function POST(request: Request) {
     const user = await client.users.getUser(userId);
     const userRole = user.publicMetadata?.role as string | undefined;
 
-    if (userRole !== 'COMPANY_ERP') {
+    if (userRole !== 'COMPANY_ERP' && userRole !== 'client') {
       console.error(`Forbidden: User ${userId} with role ${userRole} attempted to post job`);
       return NextResponse.json(
-        { message: 'Forbidden: Only company ERP users can post jobs' },
+        { message: 'Forbidden: Only company users can post jobs' },
         { status: 403 }
       );
     }
