@@ -1,13 +1,11 @@
 {
   "/api/jobs/route": "app/api/jobs/route.js",
-  "/api/user/update-role/route": "app/api/user/update-role/route.js",
-  "/api/user/route": "app/api/user/route.js",
-  "/api/companies/route": "app/api/companies/route.js",
-  "/api/applications/company/[companyId]/route": "app/api/applications/company/[companyId]/route.js",
+  "/api/admin/companies/route": "app/api/admin/companies/route.js",
+  "/api/admin/users/route": "app/api/admin/users/route.js",
   "/page": "app/page.js",
   "/company-onboarding/page": "app/company-onboarding/page.js",
   "/sign-in/[[...sign-in]]/page": "app/sign-in/[[...sign-in]]/page.js",
   "/auth-callback/page": "app/auth-callback/page.js",
-  "/add-company/page": "app/add-company/page.js",
+  "/admin/page": "app/admin/page.js",
   "/dashboard/page": "app/dashboard/page.js"
 }
