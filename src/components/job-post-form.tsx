@@ -18,7 +18,6 @@ export default function JobPostForm() {
   const [salaryCurrency, setSalaryCurrency] = useState('INR');
   const [requirements, setRequirements] = useState('');
   const [responsibilities, setResponsibilities] = useState('');
-  const [applyLink, setApplyLink] = useState('');
   const [expiresAt, setExpiresAt] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -76,7 +75,6 @@ export default function JobPostForm() {
       salaryCurrency: salaryCurrency || undefined,
       requirements: requirements ? requirements.split(',').map(item => item.trim()).filter(item => item) : [],
       responsibilities: responsibilities ? responsibilities.split(',').map(item => item.trim()).filter(item => item) : [],
-      applyLink: applyLink || undefined,
       expiresAt: expiresAt || undefined,
       status: 'active'
     };
@@ -105,7 +103,6 @@ export default function JobPostForm() {
         setSalaryCurrency('INR');
         setRequirements('');
         setResponsibilities('');
-        setApplyLink('');
         setExpiresAt('');
       } else if (response.status === 400) {
         const errorData = await response.json();
@@ -309,24 +306,6 @@ export default function JobPostForm() {
           </p>
         </div>
 
-        {/* Apply Link */}
-        <div>
-          <label htmlFor="applyLink" className="block text-sm font-medium text-text-primary mb-2">
-            Application Link
-          </label>
-          <input
-            type="url"
-            id="applyLink"
-            value={applyLink}
-            onChange={(e) => setApplyLink(e.target.value)}
-            className="nh-input w-full px-4 py-3 rounded-lg border border-input-border focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition-nh"
-            placeholder="https://company.com/careers/apply"
-          />
-          <p className="text-xs text-text-secondary mt-1">
-            Optional: External link where candidates can apply
-          </p>
-        </div>
-
         {/* Expiry Date */}
         <div>
           <label htmlFor="expiresAt" className="block text-sm font-medium text-text-primary mb-2">
@@ -360,7 +339,6 @@ export default function JobPostForm() {
                 setSalaryCurrency('INR');
                 setRequirements('');
                 setResponsibilities('');
-                setApplyLink('');
                 setExpiresAt('');
               }
             }}
