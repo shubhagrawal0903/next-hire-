@@ -299,11 +299,11 @@ export default function Header() {
             {showMobileMenu && (
                 <div
                     ref={mobileMenuRef}
-                    className="absolute top-full left-0 right-0 bg-surface border-b border-border shadow-nh md:hidden z-40"
+                    className="fixed top-16 left-0 right-0 bottom-0 bg-surface/95 backdrop-blur-sm md:hidden z-50 overflow-y-auto"
                 >
-                    <div className="px-4 py-4 space-y-4">
+                    <div className="px-4 py-4 space-y-4 max-w-md mx-auto">
                         {/* Navigation Links */}
-                        <nav className="space-y-2">
+                        <nav className="space-y-2 bg-card rounded-xl p-3 border border-border">
                             {/* Show based on role and auth status */}
                             {isLoaded && (
                                 <>
@@ -311,7 +311,7 @@ export default function Header() {
                                     {isSignedIn && (role === 'ADMIN' || role === 'admin') && (
                                         <Link
                                             href="/admin"
-                                            className="block px-3 py-2 text-text-primary hover:bg-surface/80 rounded-md transition-nh"
+                                            className="block px-4 py-3 text-text-primary hover:bg-primary/10 rounded-lg transition-nh font-medium"
                                             onClick={() => setShowMobileMenu(false)}
                                         >
                                             Admin Panel
@@ -323,14 +323,14 @@ export default function Header() {
                                         <>
                                             <Link
                                                 href="/"
-                                                className="block px-3 py-2 text-text-primary hover:bg-surface/80 rounded-md transition-nh"
+                                                className="block px-4 py-3 text-text-primary hover:bg-primary/10 rounded-lg transition-nh font-medium"
                                                 onClick={() => setShowMobileMenu(false)}
                                             >
                                                 Jobs
                                             </Link>
                                             <Link
                                                 href="/my-applications"
-                                                className="block px-3 py-2 text-text-primary hover:bg-surface/80 rounded-md transition-nh"
+                                                className="block px-4 py-3 text-text-primary hover:bg-primary/10 rounded-lg transition-nh font-medium"
                                                 onClick={() => setShowMobileMenu(false)}
                                             >
                                                 My Applications
@@ -343,14 +343,14 @@ export default function Header() {
                                         <>
                                             <Link
                                                 href="/"
-                                                className="block px-3 py-2 text-text-primary hover:bg-surface/80 rounded-md transition-nh"
+                                                className="block px-4 py-3 text-text-primary hover:bg-primary/10 rounded-lg transition-nh font-medium"
                                                 onClick={() => setShowMobileMenu(false)}
                                             >
                                                 Jobs
                                             </Link>
                                             <Link
                                                 href="/my-applications"
-                                                className="block px-3 py-2 text-text-primary hover:bg-surface/80 rounded-md transition-nh"
+                                                className="block px-4 py-3 text-text-primary hover:bg-primary/10 rounded-lg transition-nh font-medium"
                                                 onClick={() => setShowMobileMenu(false)}
                                             >
                                                 My Applications
@@ -363,21 +363,21 @@ export default function Header() {
                                         <>
                                             <Link
                                                 href="/dashboard"
-                                                className="block px-3 py-2 text-text-primary hover:bg-surface/80 rounded-md transition-nh"
+                                                className="block px-4 py-3 text-text-primary hover:bg-primary/10 rounded-lg transition-nh font-medium"
                                                 onClick={() => setShowMobileMenu(false)}
                                             >
                                                 Dashboard
                                             </Link>
                                             <Link
                                                 href="/post-job"
-                                                className="block px-3 py-2 text-text-primary hover:bg-surface/80 rounded-md transition-nh"
+                                                className="block px-4 py-3 text-text-primary hover:bg-primary/10 rounded-lg transition-nh font-medium"
                                                 onClick={() => setShowMobileMenu(false)}
                                             >
                                                 Post Job
                                             </Link>
                                             <Link
                                                 href="/my-jobs"
-                                                className="block px-3 py-2 text-text-primary hover:bg-surface/80 rounded-md transition-nh"
+                                                className="block px-4 py-3 text-text-primary hover:bg-primary/10 rounded-lg transition-nh font-medium"
                                                 onClick={() => setShowMobileMenu(false)}
                                             >
                                                 My Jobs
@@ -390,14 +390,14 @@ export default function Header() {
                                         <>
                                             <Link
                                                 href="/"
-                                                className="block px-3 py-2 text-text-primary hover:bg-surface/80 rounded-md transition-nh"
+                                                className="block px-4 py-3 text-text-primary hover:bg-primary/10 rounded-lg transition-nh font-medium"
                                                 onClick={() => setShowMobileMenu(false)}
                                             >
                                                 Jobs
                                             </Link>
                                             <Link
                                                 href="/my-applications"
-                                                className="block px-3 py-2 text-text-primary hover:bg-surface/80 rounded-md transition-nh"
+                                                className="block px-4 py-3 text-text-primary hover:bg-primary/10 rounded-lg transition-nh font-medium"
                                                 onClick={() => setShowMobileMenu(false)}
                                             >
                                                 My Applications
@@ -409,12 +409,12 @@ export default function Header() {
                         </nav>
 
                         {/* Auth Section */}
-                        <div className="px-3 pt-4 border-t border-border">
+                        <div className="bg-card rounded-xl p-4 border border-border">
                             <SignedOut>
                                 <div className="space-y-2">
                                     <SignInButton mode="modal">
                                         <button
-                                            className="w-full px-4 py-2 text-sm text-text-secondary hover:text-text-primary transition-nh text-left"
+                                            className="w-full px-4 py-3 text-sm text-text-primary bg-surface hover:bg-surface/80 rounded-lg transition-nh font-medium border border-border"
                                             onClick={() => setShowMobileMenu(false)}
                                         >
                                             Sign In
@@ -422,7 +422,7 @@ export default function Header() {
                                     </SignInButton>
                                     <SignUpButton mode="modal">
                                         <button
-                                            className="w-full nh-button-primary px-4 py-2 text-sm rounded-lg transition-nh shadow-sm hover:shadow-md"
+                                            className="w-full nh-button-primary px-4 py-3 text-sm rounded-lg transition-nh shadow-sm hover:shadow-md font-medium"
                                             onClick={() => setShowMobileMenu(false)}
                                         >
                                             Sign Up
@@ -432,24 +432,24 @@ export default function Header() {
                             </SignedOut>
 
                             <SignedIn>
-                                <div className="space-y-2">
-                                    <div className="flex items-center gap-3 px-3 py-2">
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-3 px-3 py-3 bg-surface rounded-lg">
                                         {user?.imageUrl ? (
                                             <img
                                                 src={user.imageUrl}
                                                 alt="Profile"
-                                                className="w-8 h-8 rounded-full object-cover"
+                                                className="w-10 h-10 rounded-full object-cover border-2 border-border"
                                             />
                                         ) : (
-                                            <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
-                                                <User className="w-4 h-4 text-muted-foreground" />
+                                            <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center border-2 border-primary/20">
+                                                <User className="w-5 h-5 text-primary" />
                                             </div>
                                         )}
-                                        <div>
-                                            <p className="font-medium text-text-primary text-sm">
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-semibold text-text-primary text-sm truncate">
                                                 {user?.firstName || user?.username || 'User'}
                                             </p>
-                                            <p className="text-xs text-text-muted">
+                                            <p className="text-xs text-text-muted truncate">
                                                 {user?.primaryEmailAddress?.emailAddress}
                                             </p>
                                         </div>
@@ -460,9 +460,9 @@ export default function Header() {
                                             router.push('/profile');
                                             setShowMobileMenu(false);
                                         }}
-                                        className="flex items-center gap-3 w-full px-3 py-2 text-left text-text-primary hover:bg-surface/80 rounded-md transition-nh"
+                                        className="flex items-center gap-3 w-full px-4 py-3 text-left text-text-primary hover:bg-primary/10 rounded-lg transition-nh font-medium"
                                     >
-                                        <Settings className="w-4 h-4" />
+                                        <Settings className="w-5 h-5" />
                                         <span className="text-sm">Manage account</span>
                                     </button>
 
@@ -471,9 +471,9 @@ export default function Header() {
                                             signOut();
                                             setShowMobileMenu(false);
                                         }}
-                                        className="flex items-center gap-3 w-full px-3 py-2 text-left text-error hover:bg-error/10 rounded-md transition-nh"
+                                        className="flex items-center gap-3 w-full px-4 py-3 text-left text-red-600 dark:text-red-400 hover:bg-red-500/10 rounded-lg transition-nh font-medium"
                                     >
-                                        <LogOut className="w-4 h-4" />
+                                        <LogOut className="w-5 h-5" />
                                         <span className="text-sm">Sign out</span>
                                     </button>
                                 </div>
