@@ -166,14 +166,14 @@ export default function PostJobPage() {
 
   // Job Post Form
   return (
-    <main className="min-h-screen bg-background py-12 px-4 md:px-6 lg:px-8">
+    <main className="min-h-screen bg-background py-6 sm:py-12 px-4 sm:px-6 md:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-text-primary mb-2">Post a New Job</h1>
-          <p className="text-text-secondary">Create a compelling job listing to attract the best talent.</p>
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">Post a New Job</h1>
+          <p className="text-sm sm:text-base text-text-secondary">Create a compelling job listing to attract the best talent.</p>
         </div>
 
-        <div className="bg-card rounded-xl border border-border shadow-sm p-6 md:p-8">
+        <div className="bg-card rounded-xl border border-border shadow-sm p-4 sm:p-6 md:p-8">
           <JobPostForm />
         </div>
       </div>
