@@ -75,14 +75,14 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background py-10 px-4 sm:px-6">
+    <main className="min-h-screen bg-background py-6 sm:py-10 px-4 sm:px-6">
       <div className="max-w-screen-2xl mx-auto">
         {/* Header */}
-        <div className="mb-10">
-          <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-2">
+        <div className="mb-6 sm:mb-10">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-primary mb-2">
             Company Dashboard
           </h1>
-          <p className="text-text-secondary text-lg">
+          <p className="text-text-secondary text-sm sm:text-base md:text-lg">
             Manage your company profile, jobs, and applications
           </p>
         </div>
@@ -128,26 +128,28 @@ export default function DashboardPage() {
         {!isLoading && !error && userCompany && (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             {/* Company Info Card */}
-            <div className="bg-card rounded-xl border border-border shadow-sm p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="bg-primary/10 w-14 h-14 rounded-lg flex items-center justify-center">
-                  <Building2 className="w-7 h-7 text-primary" />
+            <div className="bg-card rounded-xl border border-border shadow-sm p-4 sm:p-6">
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary/10 w-12 h-12 sm:w-14 sm:h-14 rounded-lg flex items-center justify-center shrink-0">
+                    <Building2 className="w-6 h-6 sm:w-7 sm:h-7 text-primary" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h2 className="text-xl sm:text-2xl font-bold text-text-primary truncate">
+                      {userCompany.name}
+                    </h2>
+                    <p className="text-text-muted text-xs sm:text-sm flex items-center gap-2">
+                      ID: <span className="font-mono bg-surface px-1.5 py-0.5 rounded text-xs truncate max-w-[150px]">{userCompany.id}</span>
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-text-primary">
-                    {userCompany.name}
-                  </h2>
-                  <p className="text-text-muted text-sm flex items-center gap-2">
-                    ID: <span className="font-mono bg-surface px-1.5 py-0.5 rounded text-xs">{userCompany.id}</span>
-                  </p>
-                </div>
+                <Link
+                  href={`/company/${userCompany.id}`}
+                  className="flex items-center justify-center gap-2 px-4 py-2.5 bg-surface text-text-primary border border-border rounded-lg hover:bg-surface/80 transition-colors font-medium text-sm w-full sm:w-auto"
+                >
+                  View Public Profile <ArrowRight className="w-4 h-4" />
+                </Link>
               </div>
-              <Link
-                href={`/company/${userCompany.id}`}
-                className="flex items-center justify-center gap-2 px-5 py-2.5 bg-surface text-text-primary border border-border rounded-lg hover:bg-surface/80 transition-colors font-medium text-sm"
-              >
-                View Public Profile <ArrowRight className="w-4 h-4" />
-              </Link>
             </div>
 
             {/* Analytics Dashboard */}
@@ -155,11 +157,11 @@ export default function DashboardPage() {
 
             {/* Applicants Section */}
             <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
-              <div className="p-6 border-b border-border">
-                <h2 className="text-xl font-bold text-text-primary">
+              <div className="p-4 sm:p-6 border-b border-border">
+                <h2 className="text-lg sm:text-xl font-bold text-text-primary">
                   Recent Applications
                 </h2>
-                <p className="text-text-secondary text-sm mt-1">Manage and track your candidates</p>
+                <p className="text-text-secondary text-xs sm:text-sm mt-1">Manage and track your candidates</p>
               </div>
               <div className="p-0">
                 <ApplicantList companyId={userCompany.id} />
