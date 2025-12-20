@@ -1,9 +1,11 @@
 {
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/jobs/route": "app/api/jobs/route.js",
   "/api/user/route": "app/api/user/route.js",
-  "/api/companies/route": "app/api/companies/route.js",
-  "/company-onboarding/page": "app/company-onboarding/page.js",
   "/sign-in/[[...sign-in]]/page": "app/sign-in/[[...sign-in]]/page.js",
   "/add-company/page": "app/add-company/page.js",
   "/post-job/page": "app/post-job/page.js",
+  "/my-jobs/page": "app/my-jobs/page.js",
   "/dashboard/page": "app/dashboard/page.js"
 }

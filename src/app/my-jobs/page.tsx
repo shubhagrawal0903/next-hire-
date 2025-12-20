@@ -81,29 +81,30 @@ export default function MyJobsPage() {
   };
 
   return (
-    <main className="container mx-auto px-4 py-8 md:px-8">
-      {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
-          My Posted Jobs
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Manage and view all the jobs you've posted
-        </p>
-      </div>
+    <main className="min-h-screen bg-background px-4 py-6 sm:py-8 sm:px-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Page Header */}
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-primary mb-2">
+            My Posted Jobs
+          </h1>
+          <p className="text-sm sm:text-base text-text-secondary">
+            Manage and view all the jobs you've posted
+          </p>
+        </div>
 
       {/* Loading State */}
       {isLoading ? (
         <div className="flex justify-center items-center py-20">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-t-4 border-b-4 border-primary"></div>
         </div>
       ) : !Array.isArray(myJobs) || myJobs.length === 0 ? (
         /* Empty State */
-        <div className="text-center py-20">
-          <div className="max-w-md mx-auto">
+        <div className="text-center py-12 sm:py-20">
+          <div className="max-w-md mx-auto bg-card rounded-xl border border-border p-8">
             <div className="mb-4">
               <svg
-                className="mx-auto h-24 w-24 text-gray-400"
+                className="mx-auto h-16 w-16 sm:h-24 sm:w-24 text-text-muted"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -116,15 +117,15 @@ export default function MyJobsPage() {
                 />
               </svg>
             </div>
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
+            <h2 className="text-xl sm:text-2xl font-semibold text-text-primary mb-2">
               No jobs posted yet
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+            <p className="text-sm sm:text-base text-text-secondary mb-6">
               You haven't posted any jobs yet. Start by posting your first job!
             </p>
             <a
               href="/post-job"
-              className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+              className="inline-flex items-center px-5 py-2.5 sm:px-6 sm:py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-lg transition-colors shadow-sm text-sm sm:text-base"
             >
               Post a Job
             </a>
@@ -132,7 +133,7 @@ export default function MyJobsPage() {
         </div>
       ) : (
         /* Jobs Grid */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {Array.isArray(myJobs) && myJobs.map((job) => (
             <div key={job.id}>
               {job.id === editingJobId ? (
@@ -182,6 +183,7 @@ export default function MyJobsPage() {
         open={modalOpen}
         onClose={() => setModalOpen(false)}
       />
+      </div>
     </main>
   );
 }
