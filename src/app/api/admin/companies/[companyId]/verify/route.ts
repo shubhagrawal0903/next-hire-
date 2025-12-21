@@ -23,7 +23,7 @@ export async function PATCH(
     const user = await client.users.getUser(userId);
     const role = user.publicMetadata?.role as string | undefined;
 
-    if (role !== "ADMIN") {
+    if (role?.toUpperCase() !== "ADMIN") {
       return NextResponse.json(
         { error: "Forbidden - Admin access required" },
         { status: 403 }

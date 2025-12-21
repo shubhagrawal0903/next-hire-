@@ -115,7 +115,7 @@ model UserProfile {
   // Profile fields
   bio          String?
   location     String?
-  headline     String? // e.g., "Senior Frontend Developer at XYZ"
+  headline     String? 
   resumeUrl    String?  // Resume file URL from Cloudinary
   skills       String[] // Array of user's skills
   experience   Json[]   // Array of job experience objects (defaults to empty array)

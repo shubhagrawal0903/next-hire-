@@ -17,7 +17,7 @@ export async function GET(request: Request) {
     const clerkUser = await clerk.users.getUser(userId);
     const role = clerkUser?.publicMetadata?.role as string | undefined;
 
-    if (role !== "ADMIN") {
+    if (role?.toUpperCase() !== "ADMIN") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 

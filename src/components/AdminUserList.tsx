@@ -105,101 +105,199 @@ export default function AdminUserList() {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full">
-        <thead>
-          <tr className="border-b border-border bg-surface/50 text-left">
-            <th className="px-6 py-4 text-xs font-semibold text-text-secondary uppercase tracking-wider">User Profile</th>
-            <th className="px-6 py-4 text-xs font-semibold text-text-secondary uppercase tracking-wider">Email Contact</th>
-            <th className="px-6 py-4 text-xs font-semibold text-text-secondary uppercase tracking-wider">Role</th>
-            <th className="px-6 py-4 text-xs font-semibold text-text-secondary uppercase tracking-wider">Joined</th>
-            <th className="px-6 py-4 text-xs font-semibold text-text-secondary uppercase tracking-wider text-right">Actions</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-border">
-          {users.map((user) => (
-            <tr key={user.id} className="hover:bg-surface/50 transition-colors">
-              <td className="px-6 py-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-bold">
-                    {(user.firstName || user.email || 'U').charAt(0).toUpperCase()}
-                  </div>
-                  <div>
-                    <div className="font-medium text-text-primary text-sm">
-                      {user.firstName ? `${user.firstName} ${user.lastName || ''}` : 'Unknown User'}
-                    </div>
-                    <div className="text-xs text-text-muted font-mono">{user.id.slice(0, 12)}...</div>
-                  </div>
+    <>
+      {/* Mobile View - Cards */}
+      <div className="block lg:hidden space-y-4 p-4">
+        {users.map((user) => (
+          <div key={user.id} className="bg-surface rounded-lg border border-border p-4 space-y-3 shadow-sm">
+            <div className="flex items-start justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-bold flex-shrink-0">
+                  {(user.firstName || user.email || 'U').charAt(0).toUpperCase()}
                 </div>
-              </td>
-              <td className="px-6 py-4 text-sm text-text-secondary">
-                {user.email || "No Email"}
-              </td>
-              <td className="px-6 py-4">
-                {user.id === editingUserId ? (
-                  <select
-                    value={selectedRole}
-                    onChange={(e) => setSelectedRole(e.target.value)}
-                    className="px-3 py-1.5 rounded-lg border border-border bg-background text-sm focus:ring-2 focus:ring-primary/20 outline-none w-full max-w-[140px]"
+                <div className="min-w-0">
+                  <div className="font-medium text-text-primary text-sm">
+                    {user.firstName ? `${user.firstName} ${user.lastName || ''}` : 'Unknown User'}
+                  </div>
+                  <div className="text-xs text-text-muted font-mono truncate">{user.id.slice(0, 12)}...</div>
+                </div>
+              </div>
+              {user.id !== editingUserId && (
+                <div className="flex items-center gap-1 flex-shrink-0">
+                  <button
+                    className="p-2 rounded-md text-text-secondary hover:text-primary hover:bg-primary/5 transition-colors"
+                    onClick={() => {
+                      setEditingUserId(user.id);
+                      setSelectedRole(user.role || "JOB_SEEKER");
+                    }}
+                    title="Edit Role"
                   >
-                    <option value="JOB_SEEKER">User</option>
-                    <option value="COMPANY_ERP">Client</option>
-                    <option value="ADMIN">Admin</option>
-                  </select>
-                ) : (
-                  getRoleBadge(user.role)
-                )}
-              </td>
-              <td className="px-6 py-4 text-sm text-text-secondary">
-                <div className="flex items-center gap-1.5">
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  <button
+                    className="p-2 rounded-md text-text-secondary hover:text-destructive hover:bg-destructive/10 transition-colors"
+                    onClick={() => handleDeleteUser(user.id, user.email)}
+                    title="Delete User"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+            </div>
+            
+            <div className="space-y-2 text-sm">
+              <div>
+                <span className="text-xs text-text-muted uppercase tracking-wider font-semibold">Email</span>
+                <div className="text-text-secondary break-all">{user.email || "No Email"}</div>
+              </div>
+              
+              <div>
+                <span className="text-xs text-text-muted uppercase tracking-wider font-semibold">Role</span>
+                <div className="mt-1">
+                  {user.id === editingUserId ? (
+                    <select
+                      value={selectedRole}
+                      onChange={(e) => setSelectedRole(e.target.value)}
+                      className="px-3 py-2 rounded-lg border border-border bg-background text-sm focus:ring-2 focus:ring-primary/20 outline-none w-full"
+                    >
+                      <option value="JOB_SEEKER">User</option>
+                      <option value="COMPANY_ERP">Client</option>
+                      <option value="ADMIN">Admin</option>
+                    </select>
+                  ) : (
+                    getRoleBadge(user.role)
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <span className="text-xs text-text-muted uppercase tracking-wider font-semibold">Joined</span>
+                <div className="flex items-center gap-1.5 text-text-secondary mt-1">
                   <Calendar className="w-3.5 h-3.5 text-text-muted" />
                   {new Date(user.createdAt).toLocaleDateString()}
                 </div>
-              </td>
-              <td className="px-6 py-4 text-right">
-                {user.id === editingUserId ? (
-                  <div className="flex items-center justify-end gap-2">
-                    <button
-                      className="p-1.5 rounded-md bg-green-500/10 text-green-600 hover:bg-green-500/20"
-                      onClick={() => handleRoleUpdate(user.id)}
-                      title="Save"
-                    >
-                      <Check className="w-4 h-4" />
-                    </button>
-                    <button
-                      className="p-1.5 rounded-md bg-surface text-text-muted hover:bg-surface-hover hover:text-text-primary"
-                      onClick={() => setEditingUserId(null)}
-                      title="Cancel"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-end gap-2">
-                    <button
-                      className="p-1.5 rounded-md text-text-secondary hover:text-primary hover:bg-primary/5 transition-colors"
-                      onClick={() => {
-                        setEditingUserId(user.id);
-                        setSelectedRole(user.role || "JOB_SEEKER");
-                      }}
-                      title="Edit Role"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                    <button
-                      className="p-1.5 rounded-md text-text-secondary hover:text-destructive hover:bg-destructive/10 transition-colors"
-                      onClick={() => handleDeleteUser(user.id, user.email)}
-                      title="Delete User"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                )}
-              </td>
+              </div>
+            </div>
+
+            {user.id === editingUserId && (
+              <div className="flex items-center gap-2 pt-2 border-t border-border">
+                <button
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-green-500/10 text-green-600 hover:bg-green-500/20 font-medium transition-colors"
+                  onClick={() => handleRoleUpdate(user.id)}
+                >
+                  <Check className="w-4 h-4" />
+                  Save
+                </button>
+                <button
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-surface text-text-secondary hover:bg-surface-hover hover:text-text-primary font-medium transition-colors"
+                  onClick={() => setEditingUserId(null)}
+                >
+                  <X className="w-4 h-4" />
+                  Cancel
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop View - Table */}
+      <div className="hidden lg:block overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-border bg-surface/50 text-left">
+              <th className="px-6 py-4 text-xs font-semibold text-text-secondary uppercase tracking-wider">User Profile</th>
+              <th className="px-6 py-4 text-xs font-semibold text-text-secondary uppercase tracking-wider">Email Contact</th>
+              <th className="px-6 py-4 text-xs font-semibold text-text-secondary uppercase tracking-wider">Role</th>
+              <th className="px-6 py-4 text-xs font-semibold text-text-secondary uppercase tracking-wider">Joined</th>
+              <th className="px-6 py-4 text-xs font-semibold text-text-secondary uppercase tracking-wider text-right">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {users.map((user) => (
+              <tr key={user.id} className="hover:bg-surface/50 transition-colors">
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-bold">
+                      {(user.firstName || user.email || 'U').charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <div className="font-medium text-text-primary text-sm">
+                        {user.firstName ? `${user.firstName} ${user.lastName || ''}` : 'Unknown User'}
+                      </div>
+                      <div className="text-xs text-text-muted font-mono">{user.id.slice(0, 12)}...</div>
+                    </div>
+                  </div>
+                </td>
+                <td className="px-6 py-4 text-sm text-text-secondary">
+                  {user.email || "No Email"}
+                </td>
+                <td className="px-6 py-4">
+                  {user.id === editingUserId ? (
+                    <select
+                      value={selectedRole}
+                      onChange={(e) => setSelectedRole(e.target.value)}
+                      className="px-3 py-1.5 rounded-lg border border-border bg-background text-sm focus:ring-2 focus:ring-primary/20 outline-none w-full max-w-[140px]"
+                    >
+                      <option value="JOB_SEEKER">User</option>
+                      <option value="COMPANY_ERP">Client</option>
+                      <option value="ADMIN">Admin</option>
+                    </select>
+                  ) : (
+                    getRoleBadge(user.role)
+                  )}
+                </td>
+                <td className="px-6 py-4 text-sm text-text-secondary">
+                  <div className="flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-text-muted" />
+                    {new Date(user.createdAt).toLocaleDateString()}
+                  </div>
+                </td>
+                <td className="px-6 py-4 text-right">
+                  {user.id === editingUserId ? (
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        className="p-1.5 rounded-md bg-green-500/10 text-green-600 hover:bg-green-500/20"
+                        onClick={() => handleRoleUpdate(user.id)}
+                        title="Save"
+                      >
+                        <Check className="w-4 h-4" />
+                      </button>
+                      <button
+                        className="p-1.5 rounded-md bg-surface text-text-muted hover:bg-surface-hover hover:text-text-primary"
+                        onClick={() => setEditingUserId(null)}
+                        title="Cancel"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        className="p-1.5 rounded-md text-text-secondary hover:text-primary hover:bg-primary/5 transition-colors"
+                        onClick={() => {
+                          setEditingUserId(user.id);
+                          setSelectedRole(user.role || "JOB_SEEKER");
+                        }}
+                        title="Edit Role"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        className="p-1.5 rounded-md text-text-secondary hover:text-destructive hover:bg-destructive/10 transition-colors"
+                        onClick={() => handleDeleteUser(user.id, user.email)}
+                        title="Delete User"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }

@@ -66,13 +66,13 @@ export default function AdminPage() {
 
   // Admin access granted
   return (
-    <div className="min-h-screen bg-background py-8 px-4 sm:px-6">
-      <div className="max-w-screen-2xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="min-h-screen bg-background py-4 sm:py-8 px-3 sm:px-6">
+      <div className="max-w-screen-2xl mx-auto space-y-6 sm:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <header className="flex flex-col gap-1">
-          <h1 className="text-3xl font-bold text-text-primary tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight">
             Admin Dashboard
           </h1>
-          <p className="text-text-secondary text-lg">
+          <p className="text-text-secondary text-base sm:text-lg">
             Manage companies, users, and platform settings.
           </p>
         </header>
@@ -84,24 +84,24 @@ export default function AdminPage() {
 
         {/* Companies Pending Verification Section */}
         <section className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-border">
-            <h2 className="text-xl font-bold text-text-primary flex items-center gap-2">
+          <div className="p-4 sm:p-6 border-b border-border">
+            <h2 className="text-lg sm:text-xl font-bold text-text-primary flex items-center gap-2">
               Companies Pending Verification
             </h2>
-            <p className="text-text-secondary text-sm mt-1">Review and approve company registration documents.</p>
+            <p className="text-text-secondary text-xs sm:text-sm mt-1">Review and approve company registration documents.</p>
           </div>
-          <div className="p-6">
+          <div className="p-3 sm:p-6">
             <AdminCompanyList />
           </div>
         </section>
 
         {/* User Management Section */}
         <section className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-border">
-            <h2 className="text-xl font-bold text-text-primary">
+          <div className="p-4 sm:p-6 border-b border-border">
+            <h2 className="text-lg sm:text-xl font-bold text-text-primary">
               User Management
             </h2>
-            <p className="text-text-secondary text-sm mt-1">View and manage user roles and accounts.</p>
+            <p className="text-text-secondary text-xs sm:text-sm mt-1">View and manage user roles and accounts.</p>
           </div>
           <div className="p-0">
             <AdminUserList />
