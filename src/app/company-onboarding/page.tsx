@@ -21,65 +21,65 @@ export default function CompanyOnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4">
-      <div className="max-w-4xl w-full space-y-8 animate-fade-in">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 py-8 sm:py-12">
+      <div className="max-w-4xl w-full space-y-6 sm:space-y-8 animate-fade-in">
         {/* Header */}
-        <div className="text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface border border-border text-sm font-medium text-text-secondary">
-            <Building2 className="w-4 h-4 text-primary" />
+        <div className="text-center space-y-3 sm:space-y-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface border border-border text-xs sm:text-sm font-medium text-text-secondary">
+            <Building2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
             Company Access
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-text-primary">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary px-2">
             Welcome to Next-Hire
           </h1>
-          <p className="text-lg text-text-secondary max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-text-secondary max-w-2xl mx-auto px-2">
             Choose how you'd like to proceed with your hiring journey
           </p>
         </div>
 
         {/* Options */}
-        <div className="grid md:grid-cols-2 gap-6 mt-12">
+        <div className="grid md:grid-cols-2 gap-4 sm:gap-6 mt-8 sm:mt-12">
           {/* Register New Company */}
           <button
             onClick={handleRegisterCompany}
             disabled={selectedOption !== null}
-            className={`group relative p-8 rounded-2xl border-2 transition-all duration-300 text-left ${
+            className={`group relative p-6 sm:p-8 rounded-xl sm:rounded-2xl border-2 transition-all duration-300 text-left ${
               selectedOption === "register"
                 ? "border-primary bg-primary/5 shadow-xl scale-105"
                 : "border-border bg-card hover:border-primary/50 hover:shadow-xl"
             } ${selectedOption !== null ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
           >
-            <div className="flex items-start justify-between mb-6">
-              <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Building2 className="w-7 h-7 text-primary" />
+            <div className="flex items-start justify-between mb-4 sm:mb-6">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-primary/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Building2 className="w-6 h-6 sm:w-7 sm:h-7 text-primary" />
               </div>
-              <ArrowRight className="w-6 h-6 text-text-secondary group-hover:text-primary group-hover:translate-x-1 transition-all" />
+              <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 text-text-secondary group-hover:text-primary group-hover:translate-x-1 transition-all" />
             </div>
 
-            <h3 className="text-2xl font-bold text-text-primary mb-3">Register a Company</h3>
-            <p className="text-text-secondary mb-6 leading-relaxed">
+            <h3 className="text-xl sm:text-2xl font-bold text-text-primary mb-2 sm:mb-3">Register a Company</h3>
+            <p className="text-sm sm:text-base text-text-secondary mb-4 sm:mb-6 leading-relaxed">
               New to Next-Hire? Create your company profile and start posting jobs to find the best talent.
             </p>
 
-            <div className="space-y-2 text-sm text-text-secondary">
+            <div className="space-y-2 text-xs sm:text-sm text-text-secondary">
               <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0"></div>
                 <span>Create company profile</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0"></div>
                 <span>Post unlimited jobs</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0"></div>
                 <span>Manage applicants</span>
               </div>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-border">
-              <div className="flex items-center justify-center gap-2 text-primary font-semibold group-hover:gap-3 transition-all">
+            <div className="mt-4 sm:mt-6 pt-4 border-t border-border">
+              <div className="flex items-center justify-center gap-2 text-primary font-semibold group-hover:gap-3 transition-all text-sm sm:text-base">
                 <span>Get Started</span>
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
             </div>
           </button>
@@ -88,43 +88,43 @@ export default function CompanyOnboardingPage() {
           <button
             onClick={handleExistingCompany}
             disabled={selectedOption !== null}
-            className={`group relative p-8 rounded-2xl border-2 transition-all duration-300 text-left ${
+            className={`group relative p-6 sm:p-8 rounded-xl sm:rounded-2xl border-2 transition-all duration-300 text-left ${
               selectedOption === "existing"
                 ? "border-primary bg-primary/5 shadow-xl scale-105"
                 : "border-border bg-card hover:border-primary/50 hover:shadow-xl"
             } ${selectedOption !== null ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
           >
-            <div className="flex items-start justify-between mb-6">
-              <div className="w-14 h-14 bg-green-500/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                <UserCheck className="w-7 h-7 text-green-600 dark:text-green-400" />
+            <div className="flex items-start justify-between mb-4 sm:mb-6">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-green-500/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                <UserCheck className="w-6 h-6 sm:w-7 sm:h-7 text-green-600 dark:text-green-400" />
               </div>
-              <ArrowRight className="w-6 h-6 text-text-secondary group-hover:text-primary group-hover:translate-x-1 transition-all" />
+              <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 text-text-secondary group-hover:text-primary group-hover:translate-x-1 transition-all" />
             </div>
 
-            <h3 className="text-2xl font-bold text-text-primary mb-3">Already Registered</h3>
-            <p className="text-text-secondary mb-6 leading-relaxed">
+            <h3 className="text-xl sm:text-2xl font-bold text-text-primary mb-2 sm:mb-3">Already Registered</h3>
+            <p className="text-sm sm:text-base text-text-secondary mb-4 sm:mb-6 leading-relaxed">
               Already have a company account? Sign in to access your dashboard and manage your job postings.
             </p>
 
-            <div className="space-y-2 text-sm text-text-secondary">
+            <div className="space-y-2 text-xs sm:text-sm text-text-secondary">
               <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></div>
                 <span>Access your dashboard</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></div>
                 <span>View applications</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></div>
                 <span>Manage jobs</span>
               </div>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-border">
-              <div className="flex items-center justify-center gap-2 text-primary font-semibold group-hover:gap-3 transition-all">
+            <div className="mt-4 sm:mt-6 pt-4 border-t border-border">
+              <div className="flex items-center justify-center gap-2 text-primary font-semibold group-hover:gap-3 transition-all text-sm sm:text-base">
                 <span>Sign In</span>
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
             </div>
           </button>
@@ -132,7 +132,7 @@ export default function CompanyOnboardingPage() {
 
         {selectedOption && (
           <div className="text-center mt-6">
-            <div className="inline-flex items-center gap-3 text-text-secondary">
+            <div className="inline-flex items-center gap-3 text-text-secondary text-sm">
               <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
               <span>Redirecting...</span>
             </div>
