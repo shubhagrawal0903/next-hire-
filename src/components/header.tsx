@@ -84,14 +84,14 @@ export default function Header() {
         <header className="h-16 px-4 lg:px-6 bg-header border-b border-border flex justify-between items-center relative">
             {/* Logo */}
             <Link href={'/'} className="flex items-center gap-3 shrink-0">
-                <div className="h-12 w-12 rounded-full overflow-hidden bg-white flex items-center justify-center">
+                <div className="h-12 w-12 rounded-full overflow-hidden bg-white flex items-center justify-center ring-1 ring-gray-700">
                     <img
                         src="/logo.jpg"
                         alt="Next Hire"
                         className="h-full w-full object-cover"
                     />
                 </div>
-                <span className="text-2xl font-bold text-text-primary">Next-Hire</span>
+                <span className="text-2xl font-bold tracking-wide text-text-primary">Next-Hire</span>
             </Link>
             {/* Navigation Links - Desktop */}
             <nav className="hidden md:flex items-center gap-6">
