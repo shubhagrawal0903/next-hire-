@@ -30,12 +30,14 @@ export default function Header() {
     // Get user role from public metadata
     const role = user?.publicMetadata?.role as string | undefined;
 
-    // Check if client user has a company
+    // Check if company user has a company
     useEffect(() => {
         const checkCompany = async () => {
-            if (isSignedIn && (role === 'client' || role === 'COMPANY_ERP')) {
+            if (isSignedIn && role === 'COMPANY_ERP' && user?.id) {
                 try {
                     console.log('Checking company for role:', role);
+                    console.log('Current User ID:', user.id); // Log userId before fetch
+                    
                     const response = await fetch('/api/user');
                     if (response.ok) {
                         const data = await response.json();
@@ -45,6 +47,8 @@ export default function Header() {
                         setHasCompany(!!data.companyId);
                     } else {
                         console.error('Failed to fetch user data:', response.status);
+                        const errorText = await response.text();
+                        console.error('Error response:', errorText);
                         setHasCompany(false);
                     }
                 } catch (error) {
@@ -56,10 +60,10 @@ export default function Header() {
             }
         };
         
-        if (isLoaded) {
+        if (isLoaded && user) {
             checkCompany();
         }
-    }, [isSignedIn, role, isLoaded, pathname]);
+    }, [isSignedIn, role, isLoaded, user?.id, pathname]);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -130,7 +134,7 @@ export default function Header() {
                         )}
 
                         {/* Company Rep Links - Only show if user has created a company */}
-                        {isSignedIn && (role === 'COMPANY_ERP' || role === 'client') && hasCompany && (
+                        {isSignedIn && role === 'COMPANY_ERP' && hasCompany && (
                             <>
                                 <Link href="/dashboard" className="text-nav-link hover:text-nav-link-hover font-medium transition-nh">
                                     Dashboard
@@ -202,7 +206,7 @@ export default function Header() {
                                     {user?.firstName || 'User'}
                                 </p>
                                 <p className="text-[10px] text-text-muted leading-tight truncate max-w-20">
-                                    {(role === 'ADMIN' || role === 'admin') ? 'Admin' : (role === 'COMPANY_ERP' || role === 'client') ? 'Company' : 'User'}
+                                    {(role === 'ADMIN' || role === 'admin') ? 'Admin' : role === 'COMPANY_ERP' ? 'Company' : 'User'}
                                 </p>
                             </div>
                             <ChevronDown
@@ -233,7 +237,7 @@ export default function Header() {
                                         {user?.primaryEmailAddress?.emailAddress}
                                     </p>
                                     <div className="mt-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
-                                        {(role === 'ADMIN' || role === 'admin') ? 'Administrator' : (role === 'COMPANY_ERP' || role === 'client') ? 'Company Account' : 'User'}
+                                        {(role === 'ADMIN' || role === 'admin') ? 'Administrator' : role === 'COMPANY_ERP' ? 'Company Account' : 'User'}
                                     </div>
                                 </div>
 
@@ -359,7 +363,7 @@ export default function Header() {
                                     )}
 
                                     {/* Company Rep Links - Only show if user has created a company */}
-                                    {isSignedIn && (role === 'COMPANY_ERP' || role === 'client') && hasCompany && (
+                                    {isSignedIn && role === 'COMPANY_ERP' && hasCompany && (
                                         <>
                                             <Link
                                                 href="/dashboard"

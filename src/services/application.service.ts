@@ -15,33 +15,32 @@ cloudinary.config({
 
 class ApplicationService {
   /**
-   * Upload resume buffer to Cloudinary using Upload Stream
+   * Upload resume buffer to Cloudinary using Base64 Data URI
    * Ensures binary data is saved correctly as a PDF file.
    */
   private async _uploadResumeToCloudinary(buffer: Buffer, filename: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      // Stream is the only way to upload binary files correctly in 'raw' mode
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          resource_type: 'raw',
-          folder: 'resumes',
-          access_mode: 'public', // Important: Ensures file is accessible
-          // 🔥 Filename sanitization: Removes spaces/brackets & forces .pdf extension
-          public_id: `resume_${Date.now()}_${filename.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9]/g, "_")}.pdf`,
-          overwrite: true,
-        },
-        (error: any, result: any) => {
-          if (error) {
-            console.error('[Cloudinary] Upload error:', error)
-            reject(new Error(`Cloudinary upload failed: ${error.message}`))
-          } else {
-            console.log('[Cloudinary] Upload successful:', result.secure_url)
-            resolve(result.secure_url)
-          }
-        }
-      )
-      uploadStream.end(buffer)
-    })
+    try {
+      // Convert buffer to Base64 Data URI
+      const base64Data = buffer.toString('base64');
+      const dataURI = "data:application/pdf;base64," + base64Data;
+      
+      // Upload using Base64 Data URI (prevents stream timeouts)
+      const result = await cloudinary.uploader.upload(dataURI, {
+        resource_type: 'raw',
+        folder: 'resumes',
+        access_mode: 'public', // Important: Ensures file is accessible
+        // 🔥 Filename sanitization: Removes spaces/brackets & forces .pdf extension
+        public_id: `resume_${Date.now()}_${filename.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9]/g, "_")}.pdf`,
+        overwrite: true,
+        timeout: 60000,
+      });
+      
+      console.log('[Cloudinary] Upload successful:', result.secure_url);
+      return result.secure_url;
+    } catch (error: any) {
+      console.error('[Cloudinary] Upload error:', error);
+      throw new Error(`Cloudinary upload failed: ${error.message}`);
+    }
   }
 
   /**

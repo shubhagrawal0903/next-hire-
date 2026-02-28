@@ -11,16 +11,19 @@ interface RecommendedJobsProps {
 }
 
 export default function RecommendedJobs({ onRecommendationsLoad }: RecommendedJobsProps) {
-  const { isSignedIn } = useUser();
+  const { user, isSignedIn } = useUser();
   const { getToken } = useAuth();
   const [recommendations, setRecommendations] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
+  // Get user role from public metadata
+  const role = user?.publicMetadata?.role as string | undefined;
+
   useEffect(() => {
-    // Don't fetch if user is not signed in
-    if (!isSignedIn) {
+    // Don't fetch if user is not signed in or not a JOB_SEEKER
+    if (!isSignedIn || role !== 'JOB_SEEKER') {
       setIsLoading(false);
       return;
     }
@@ -62,10 +65,10 @@ export default function RecommendedJobs({ onRecommendationsLoad }: RecommendedJo
     };
 
     fetchRecommendations();
-  }, [isSignedIn]);
+  }, [isSignedIn, role]);
 
-  // Don't render if user not signed in, still loading, or no recommendations
-  if (!isSignedIn || isLoading || recommendations.length === 0) {
+  // Don't render if user not signed in, not a JOB_SEEKER, still loading, or no recommendations
+  if (!isSignedIn || role !== 'JOB_SEEKER' || isLoading || recommendations.length === 0) {
     return null;
   }
 
