@@ -395,3 +395,83 @@ export async function scheduleInterviewsBulk(
 
   return { success: scheduled > 0, scheduled, failed, errors };
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Bulk Personalized Messaging
+   ──────────────────────────────────────────────────────────────────────── */
+
+export interface MessageRecipient {
+  name: string;
+  email: string;
+}
+
+export interface BulkMessageResult {
+  success: boolean;
+  sent: number;
+  failed: number;
+  errors: string[];
+}
+
+/**
+ * Send a personalised email to every recipient.
+ * `{{name}}` in the body/subject is replaced with the recipient's real name.
+ */
+export async function sendBulkMessages(
+  subject: string,
+  messageBody: string,
+  recipients: MessageRecipient[]
+): Promise<BulkMessageResult> {
+  const { userId } = await auth();
+  if (!userId) {
+    return { success: false, sent: 0, failed: recipients.length, errors: ['Unauthorized'] };
+  }
+
+  if (!subject.trim() || !messageBody.trim()) {
+    return { success: false, sent: 0, failed: recipients.length, errors: ['Subject and message body are required'] };
+  }
+
+  if (!recipients.length) {
+    return { success: false, sent: 0, failed: 0, errors: ['No recipients selected'] };
+  }
+
+  let sent = 0;
+  let failed = 0;
+  const errors: string[] = [];
+
+  for (const recipient of recipients) {
+    try {
+      // Replace {{name}} placeholder with the actual recipient name
+      const personalizedBody = messageBody.replace(/\{\{name\}\}/gi, recipient.name);
+      const personalizedSubject = subject.replace(/\{\{name\}\}/gi, recipient.name);
+
+      // Wrap plain text in a clean HTML email template
+      const html = `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:24px;background:#f9fafb;border-radius:10px;">
+          <div style="background:#ffffff;padding:28px;border-radius:8px;border:1px solid #e5e7eb;">
+            <div style="white-space:pre-wrap;color:#374151;font-size:15px;line-height:1.7;">
+              ${personalizedBody.replace(/\n/g, '<br/>')}
+            </div>
+          </div>
+          <p style="color:#9ca3af;font-size:12px;text-align:center;margin-top:20px;">
+            This message was sent via Next Hire. Please do not reply directly to this email.
+          </p>
+        </div>
+      `;
+
+      const result = await sendEmail(recipient.email, personalizedSubject, html);
+
+      if (result.success) {
+        sent++;
+      } else {
+        failed++;
+        errors.push(`${recipient.name} (${recipient.email}): ${result.error ?? 'send failed'}`);
+      }
+    } catch (err) {
+      failed++;
+      errors.push(`${recipient.name}: ${err instanceof Error ? err.message : 'unknown error'}`);
+    }
+  }
+
+  return { success: sent > 0, sent, failed, errors };
+}
+

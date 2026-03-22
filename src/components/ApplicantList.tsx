@@ -15,10 +15,13 @@ import {
   Briefcase,
   Download,
   Users,
+  Mail,
 } from "lucide-react";
 import ScheduleInterviewModal from "@/components/dashboard/ScheduleInterviewModal";
 import BulkInterviewModal from "@/components/dashboard/BulkInterviewModal";
 import type { BulkCandidate } from "@/components/dashboard/BulkInterviewModal";
+import BulkMessageModal from "@/components/dashboard/BulkMessageModal";
+import type { MessageTarget } from "@/components/dashboard/BulkMessageModal";
 
 /* ─── Types ─────────────────────────────────────────────────────── */
 
@@ -102,6 +105,7 @@ export default function ApplicantList({
   // ── Checkbox / bulk-select state ──────────────────────────────────
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
+  const [isMsgModalOpen, setIsMsgModalOpen] = useState(false);
 
   // ── PDF state ─────────────────────────────────────────────────────
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
@@ -400,6 +404,8 @@ export default function ApplicantList({
             <Users className="w-4 h-4" />
             {selectedIds.size} candidate{selectedIds.size !== 1 ? "s" : ""} selected
           </div>
+
+          {/* Schedule Interview */}
           <button
             onClick={() => setIsBulkModalOpen(true)}
             className={[
@@ -409,13 +415,27 @@ export default function ApplicantList({
             ].join(" ")}
           >
             <Calendar className="w-4 h-4" />
-            Schedule Interview ({selectedIds.size} selected)
+            Schedule Interview ({selectedIds.size})
           </button>
+
+          {/* Send Message */}
+          <button
+            onClick={() => setIsMsgModalOpen(true)}
+            className={[
+              "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold",
+              "bg-muted text-foreground border border-border",
+              "hover:bg-muted/80 active:scale-95 transition-all shadow-sm",
+            ].join(" ")}
+          >
+            <Mail className="w-4 h-4" />
+            Send Message ({selectedIds.size})
+          </button>
+
           <button
             onClick={() => setSelectedIds(new Set())}
             className="text-xs text-muted-foreground hover:text-foreground transition-colors"
           >
-            Clear selection
+            Clear
           </button>
         </div>
       )}
@@ -693,6 +713,20 @@ export default function ApplicantList({
           fetchApplications();
         }}
       />
+
+      {/* ── Bulk Message Modal ────────────────────────────────────────── */}
+      <BulkMessageModal
+        isOpen={isMsgModalOpen}
+        onClose={() => setIsMsgModalOpen(false)}
+        targets={applications
+          .filter((a) => selectedIds.has(a.id))
+          .map<MessageTarget>((a) => ({
+            applicantName: a.applicantName,
+            applicantEmail: a.applicantEmail,
+          }))}
+        onSuccess={() => setSelectedIds(new Set())}
+      />
     </div>
   );
 }
+
