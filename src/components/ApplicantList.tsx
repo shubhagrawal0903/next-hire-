@@ -13,6 +13,7 @@ import {
   MessageSquare,
   ChevronDown,
   Briefcase,
+  Download,
 } from "lucide-react";
 import ScheduleInterviewModal from "@/components/dashboard/ScheduleInterviewModal";
 
@@ -42,6 +43,8 @@ interface Application {
 
 interface ApplicantListProps {
   companyId: string;
+  /** Company name is used as the PDF report heading */
+  companyName?: string;
 }
 
 /* ─── Helpers ────────────────────────────────────────────────────── */
@@ -63,17 +66,6 @@ const getStatusColor = (status: string) => {
   }
 };
 
-const getStatusIcon = (status: string) => {
-  switch (status.toUpperCase()) {
-    case "PENDING":    return <Clock className="w-3 h-3" />;
-    case "REVIEWED":   return <Eye className="w-3 h-3" />;
-    case "INTERVIEW":  return <MessageSquare className="w-3 h-3" />;
-    case "ACCEPTED":   return <CheckCircle className="w-3 h-3" />;
-    case "REJECTED":   return <XCircle className="w-3 h-3" />;
-    default:           return null;
-  }
-};
-
 const getAtsScoreColor = (score: number | null | undefined) => {
   if (score === null || score === undefined)
     return "text-muted-foreground bg-muted ring-border";
@@ -92,7 +84,8 @@ const formatDate = (dateString: string) => {
 
 /* ─── Component ──────────────────────────────────────────────────── */
 
-export default function ApplicantList({ companyId }: ApplicantListProps) {
+export default function ApplicantList({ companyId, companyName = "Your Company" }: ApplicantListProps) {
+
   // ── Job filter state ──────────────────────────────────────────────
   const [jobs, setJobs] = useState<Pick<Job, "id" | "title">[]>([]);
   const [selectedJobId, setSelectedJobId] = useState<string>("");
@@ -102,6 +95,9 @@ export default function ApplicantList({ companyId }: ApplicantListProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // ── PDF state ─────────────────────────────────────────────────────
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+
   // ── Modal state ───────────────────────────────────────────────────
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
@@ -109,18 +105,18 @@ export default function ApplicantList({ companyId }: ApplicantListProps) {
   /* ── Fetch company jobs for the dropdown ─────────────────────────── */
   useEffect(() => {
     if (!companyId) return;
-    fetch(`/api/jobs?companyId=${companyId}&status=active&mine=false`)
-      .then((res) => res.ok ? res.json() : Promise.reject(res))
+    // Fetch ALL statuses so every posted job appears in the dropdown, not just active ones
+    fetch(`/api/jobs?companyId=${companyId}&status=active`)
+      .then((res) => (res.ok ? res.json() : Promise.reject(res)))
       .then((data) => {
-        // The GET /api/jobs returns { jobs, totalJobs }
         setJobs((data.jobs ?? []).map((j: Job) => ({ id: j.id, title: j.title })));
       })
       .catch(() => {
-        // Non-critical – dropdown just shows "All Jobs"
+        // Non-critical – dropdown shows "All Jobs" as fallback
       });
   }, [companyId]);
 
-  /* ── Fetch applications (re-runs on companyId OR selectedJobId change) */
+  /* ── Fetch applications ──────────────────────────────────────────── */
   const fetchApplications = async () => {
     setIsLoading(true);
     setError(null);
@@ -152,11 +148,148 @@ export default function ApplicantList({ companyId }: ApplicantListProps) {
   };
 
   useEffect(() => {
-    if (companyId) {
-      fetchApplications();
-    }
+    if (companyId) fetchApplications();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companyId, selectedJobId]);
+
+  /* ── PDF Generation ──────────────────────────────────────────────── */
+  const generatePDF = async () => {
+    if (applications.length === 0) return;
+
+    setIsGeneratingPdf(true);
+    try {
+      // Dynamic import keeps jspdf out of the initial bundle (client-only)
+      const jsPDFModule = await import("jspdf");
+      const autoTableModule = await import("jspdf-autotable");
+
+      const jsPDF = jsPDFModule.default;
+      const autoTable = autoTableModule.default;
+
+      const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+
+      // Derive the selected job title label
+      const selectedJob = jobs.find((j) => j.id === selectedJobId);
+      const jobLabel = selectedJob ? selectedJob.title : "All Jobs";
+      const subHeading = `Applicant Report: ${jobLabel}`;
+      const generatedDate = format(new Date(), "MMMM dd, yyyy 'at' hh:mm a");
+
+      // ── Page dimensions ───────────────────────────────────────────
+      const pageW = doc.internal.pageSize.getWidth();
+
+      // ── Header background bar ─────────────────────────────────────
+      doc.setFillColor(15, 23, 42); // slate-900 — works equally well in light prints
+      doc.rect(0, 0, pageW, 32, "F");
+
+      // ── Company Name (centre, white) ──────────────────────────────
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(20);
+      doc.setTextColor(255, 255, 255);
+      doc.text(companyName, pageW / 2, 13, { align: "center" });
+
+      // ── Sub-heading ───────────────────────────────────────────────
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(11);
+      doc.setTextColor(148, 163, 184); // slate-400
+      doc.text(subHeading, pageW / 2, 22, { align: "center" });
+
+      // ── Generated-on line (right-aligned) ────────────────────────
+      doc.setFontSize(8);
+      doc.setTextColor(100, 116, 139); // slate-500
+      doc.text(`Generated: ${generatedDate}`, pageW - 10, 29, { align: "right" });
+
+      // ── Sort data desc by atsScore before building rows ───────────
+      const sortedApps = [...applications].sort(
+        (a, b) => (b.atsScore ?? -1) - (a.atsScore ?? -1)
+      );
+
+      // ── Table rows ────────────────────────────────────────────────
+      const tableRows = sortedApps.map((app, idx) => [
+        idx + 1,
+        app.applicantName,
+        app.applicantEmail,
+        "N/A", // Phone — not stored on Application; placeholder
+        app.atsScore !== null && app.atsScore !== undefined
+          ? `${app.atsScore}%`
+          : "—",
+        app.job.title,
+        app.status.charAt(0).toUpperCase() + app.status.slice(1).toLowerCase(),
+        formatDate(app.createdAt),
+      ]);
+
+      // ── Colour helper for ATS score cell ─────────────────────────
+      const atsColour = (score: number | null | undefined): [number, number, number] => {
+        if (score == null) return [100, 116, 139];
+        if (score >= 70) return [22, 163, 74];  // green-600
+        if (score >= 40) return [202, 138, 4];  // yellow-600
+        return [220, 38, 38];                   // red-600
+      };
+
+      autoTable(doc, {
+        startY: 38,
+        head: [["#", "Name", "Email", "Phone", "ATS Score", "Job Role", "Status", "Applied On"]],
+        body: tableRows,
+        theme: "grid",
+        styles: {
+          fontSize: 9,
+          cellPadding: { top: 4, right: 5, bottom: 4, left: 5 },
+          textColor: [30, 41, 59],     // slate-800
+          lineColor: [226, 232, 240],  // slate-200
+          lineWidth: 0.3,
+        },
+        headStyles: {
+          fillColor: [30, 41, 59],     // slate-800
+          textColor: [248, 250, 252],  // slate-50
+          fontStyle: "bold",
+          fontSize: 9,
+          halign: "center",
+        },
+        alternateRowStyles: {
+          fillColor: [248, 250, 252],  // slate-50
+        },
+        columnStyles: {
+          0: { halign: "center", cellWidth: 10 },  // #
+          3: { halign: "center" },                 // Phone
+          4: { halign: "center", cellWidth: 22 },  // ATS Score
+          6: { halign: "center", cellWidth: 22 },  // Status
+          7: { halign: "center", cellWidth: 28 },  // Applied On
+        },
+        didParseCell(data) {
+          // Colour the ATS Score cells based on their value
+          if (data.section === "body" && data.column.index === 4) {
+            const raw = sortedApps[data.row.index]?.atsScore;
+            const [r, g, b] = atsColour(raw);
+            data.cell.styles.textColor = [r, g, b];
+            data.cell.styles.fontStyle = "bold";
+          }
+        },
+      });
+
+      // ── Footer on every page ──────────────────────────────────────
+      const totalPages = (doc as unknown as { internal: { getNumberOfPages: () => number } })
+        .internal.getNumberOfPages();
+
+      for (let i = 1; i <= totalPages; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(148, 163, 184);
+        doc.text(
+          `Page ${i} of ${totalPages}  ·  ${companyName}  ·  Confidential`,
+          pageW / 2,
+          doc.internal.pageSize.getHeight() - 6,
+          { align: "center" }
+        );
+      }
+
+      // ── Save ──────────────────────────────────────────────────────
+      const fileName = `applicant-report-${jobLabel.replace(/\s+/g, "-").toLowerCase()}-${format(new Date(), "yyyy-MM-dd")}.pdf`;
+      doc.save(fileName);
+    } catch (e) {
+      console.error("PDF generation failed:", e);
+      alert("Failed to generate PDF. Please try again.");
+    } finally {
+      setIsGeneratingPdf(false);
+    }
+  };
 
   /* ── Status update ───────────────────────────────────────────────── */
   const handleStatusChange = async (applicationId: string, newStatus: string) => {
@@ -192,15 +325,11 @@ export default function ApplicantList({ companyId }: ApplicantListProps) {
     setSelectedApplication(application);
     setIsModalOpen(true);
   };
-
   const handleModalClose = () => {
     setIsModalOpen(false);
     setSelectedApplication(null);
   };
-
-  const handleInterviewScheduled = () => {
-    fetchApplications();
-  };
+  const handleInterviewScheduled = () => fetchApplications();
 
   /* ── Render: loading ─────────────────────────────────────────────── */
   if (isLoading) {
@@ -213,17 +342,17 @@ export default function ApplicantList({ companyId }: ApplicantListProps) {
 
   /* ── Render: error ───────────────────────────────────────────────── */
   if (error) {
-    return (
-      <div className="p-6 text-center text-red-500">{error}</div>
-    );
+    return <div className="p-6 text-center text-red-500">{error}</div>;
   }
 
   /* ── Render: main ────────────────────────────────────────────────── */
   return (
     <div className="w-full">
 
-      {/* ── Job Filter Dropdown ──────────────────────────────────────── */}
-      <div className="px-4 sm:px-6 py-4 border-b border-border flex flex-col sm:flex-row sm:items-center gap-3">
+      {/* ── Toolbar: Job Filter + Download Button ─────────────────────── */}
+      <div className="px-4 sm:px-6 py-4 border-b border-border flex flex-col sm:flex-row sm:items-center gap-3 flex-wrap">
+
+        {/* Label */}
         <div className="flex items-center gap-2 text-sm font-medium text-foreground shrink-0">
           <Briefcase className="w-4 h-4 text-primary" />
           Filter by Job:
@@ -252,18 +381,44 @@ export default function ApplicantList({ companyId }: ApplicantListProps) {
               </option>
             ))}
           </select>
-          {/* Custom chevron icon */}
-          <ChevronDown
-            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
-          />
+          <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         </div>
 
         {/* Result count badge */}
-        <span className="text-xs text-muted-foreground ml-auto shrink-0">
+        <span className="text-xs text-muted-foreground shrink-0">
           {applications.length} applicant{applications.length !== 1 ? "s" : ""}
           {selectedJobId ? " for this job" : " total"}
           &nbsp;· sorted by ATS score
         </span>
+
+        {/* ── Download Report button — only visible when there are results ── */}
+        {applications.length > 0 && (
+          <button
+            onClick={generatePDF}
+            disabled={isGeneratingPdf}
+            className={[
+              "ml-auto shrink-0 flex items-center gap-2",
+              "px-4 py-2 rounded-lg text-sm font-medium",
+              "bg-primary text-primary-foreground",
+              "hover:bg-primary/90 active:scale-95",
+              "transition-all shadow-sm",
+              "disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100",
+            ].join(" ")}
+            title="Download PDF report of current applicant list"
+          >
+            {isGeneratingPdf ? (
+              <>
+                <span className="animate-spin rounded-full h-3.5 w-3.5 border-2 border-primary-foreground/30 border-t-primary-foreground" />
+                Generating…
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4" />
+                Download Report
+              </>
+            )}
+          </button>
+        )}
       </div>
 
       {/* ── Empty State ──────────────────────────────────────────────── */}
@@ -298,6 +453,7 @@ export default function ApplicantList({ companyId }: ApplicantListProps) {
             <tbody className="divide-y divide-border">
               {applications.map((app) => (
                 <tr key={app.id} className="group hover:bg-muted/20 transition-colors">
+
                   {/* Applicant */}
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
@@ -325,9 +481,7 @@ export default function ApplicantList({ companyId }: ApplicantListProps) {
                   {/* ATS Score */}
                   <td className="px-6 py-4">
                     {app.atsScore !== null && app.atsScore !== undefined ? (
-                      <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ring-1 ring-inset ${getAtsScoreColor(app.atsScore)}`}
-                      >
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ring-1 ring-inset ${getAtsScoreColor(app.atsScore)}`}>
                         {app.atsScore}%
                       </span>
                     ) : (

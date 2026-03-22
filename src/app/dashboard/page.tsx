@@ -166,7 +166,7 @@ export default function DashboardPage() {
                 </p>
               </div>
               <div className="p-0">
-                <ApplicantList companyId={userCompany.id} />
+                <ApplicantList companyId={userCompany.id} companyName={userCompany.name} />
               </div>
             </div>
           </div>
