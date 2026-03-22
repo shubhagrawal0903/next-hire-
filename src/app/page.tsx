@@ -97,10 +97,8 @@ function HomeContent() {
   return (
     <div className="min-h-screen bg-background">
       <HeroSection />
-
       <div className="container mx-auto px-4 py-8 lg:py-12 max-w-screen-2xl">
         <div className="flex flex-col lg:flex-row gap-8">
-
           {/* Sidebar */}
           <aside className="w-full lg:w-72 shrink-0">
             <div className="sticky top-24 space-y-6">
@@ -111,7 +109,6 @@ function HomeContent() {
               */}
             </div>
           </aside>
-
           {/* Main Content */}
           <section className="flex-1 min-w-0 space-y-8">
 

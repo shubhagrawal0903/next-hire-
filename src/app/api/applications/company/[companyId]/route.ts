@@ -66,13 +66,25 @@ export async function GET(
       );
     }
 
+    // Optional jobId filter from query params
+    const { searchParams } = new URL(request.url);
+    const jobId = searchParams.get("jobId");
+
+    // Build the where clause – always scoped to this company
+    const whereClause: Record<string, unknown> = {
+      job: {
+        companyId: cleanedCompanyId,
+      },
+    };
+
+    // If a specific job is selected, narrow results to that job
+    if (jobId) {
+      whereClause.jobId = jobId;
+    }
+
     // Fetch all applications for jobs belonging to this company
     const applications = await prisma.application.findMany({
-      where: {
-        job: {
-          companyId: cleanedCompanyId,
-        },
-      },
+      where: whereClause,
       include: {
         job: {
           select: {
@@ -85,7 +97,7 @@ export async function GET(
         },
       },
       orderBy: {
-        createdAt: 'desc', // Most recent applications first
+        atsScore: 'desc', // Highest ATS score first
       },
     });
 

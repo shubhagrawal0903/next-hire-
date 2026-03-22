@@ -158,10 +158,12 @@ export default function DashboardPage() {
             {/* Applicants Section */}
             <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
               <div className="p-4 sm:p-6 border-b border-border">
-                <h2 className="text-lg sm:text-xl font-bold text-text-primary">
+                <h2 className="text-lg sm:text-xl font-bold text-foreground">
                   Recent Applications
                 </h2>
-                <p className="text-text-secondary text-xs sm:text-sm mt-1">Manage and track your candidates</p>
+                <p className="text-muted-foreground text-xs sm:text-sm mt-1">
+                  Filter by job &amp; ranked by ATS score
+                </p>
               </div>
               <div className="p-0">
                 <ApplicantList companyId={userCompany.id} />
