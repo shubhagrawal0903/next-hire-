@@ -259,3 +259,139 @@ export async function cancelInterview(applicationId: string) {
     return { success: false, error: 'Failed to cancel interview.' };
   }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Bulk Interview Scheduling
+   ──────────────────────────────────────────────────────────────────────── */
+
+export interface BulkInterviewEntry {
+  applicationId: string;
+  applicantName: string;
+  applicantEmail: string;
+  scheduledTime: string; // datetime-local / ISO string
+}
+
+export interface BulkScheduleResult {
+  success: boolean;
+  scheduled: number;
+  failed: number;
+  errors: string[];
+}
+
+/**
+ * Schedule interviews for multiple candidates in one shot.
+ * For every entry: update Prisma (status → Interview) then fire a personalised email.
+ */
+export async function scheduleInterviewsBulk(
+  meetLink: string,
+  entries: BulkInterviewEntry[]
+): Promise<BulkScheduleResult> {
+  const { userId } = await auth();
+  if (!userId) {
+    return { success: false, scheduled: 0, failed: entries.length, errors: ['Unauthorized'] };
+  }
+
+  if (!meetLink || !meetLink.startsWith('http')) {
+    return { success: false, scheduled: 0, failed: entries.length, errors: ['Invalid meeting link'] };
+  }
+
+  let scheduled = 0;
+  let failed = 0;
+  const errors: string[] = [];
+
+  for (const entry of entries) {
+    try {
+      const scheduledDate = new Date(entry.scheduledTime);
+
+      // 1. Verify ownership & fetch job/company for the email body
+      const application = await prisma.application.findUnique({
+        where: { id: entry.applicationId },
+        include: { job: { include: { company: true } } },
+      });
+
+      if (!application) {
+        failed++;
+        errors.push(`${entry.applicantName}: application not found`);
+        continue;
+      }
+
+      if (application.job.userId !== userId) {
+        failed++;
+        errors.push(`${entry.applicantName}: unauthorised`);
+        continue;
+      }
+
+      // 2. Update the application
+      await prisma.application.update({
+        where: { id: entry.applicationId },
+        data: {
+          status: 'Interview',
+          interviewDate: scheduledDate,
+          interviewLink: meetLink,
+          updatedAt: new Date(),
+        },
+      });
+
+      // 3. Personalised email
+      const formattedDate = scheduledDate.toLocaleString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZoneName: 'short',
+      });
+
+      const html = `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:24px;background:#f9fafb;border-radius:10px;">
+          <h2 style="color:#1f2937;margin-bottom:16px;">🎉 You're Invited to an Interview!</h2>
+          <p style="color:#374151;font-size:16px;">Dear <strong>${entry.applicantName}</strong>,</p>
+          <p style="color:#374151;font-size:16px;">
+            Congratulations! You have been selected for an interview for the position of
+            <strong>${application.job.title}</strong> at <strong>${application.job.company.name}</strong>.
+          </p>
+          <div style="background:#fff;padding:20px;border-radius:8px;border-left:4px solid #3b82f6;margin:20px 0;">
+            <h3 style="color:#1f2937;margin-top:0;">Your Interview Details</h3>
+            <p style="color:#374151;margin:8px 0;"><strong>📅 Date &amp; Time:</strong><br/>${formattedDate}</p>
+            <p style="color:#374151;margin:8px 0;">
+              <strong>🔗 Meeting Link:</strong><br/>
+              <a href="${meetLink}" style="color:#3b82f6;text-decoration:none;">${meetLink}</a>
+            </p>
+            <p style="color:#374151;margin:8px 0;"><strong>💼 Role:</strong> ${application.job.title}</p>
+            <p style="color:#374151;margin:8px 0;"><strong>🏢 Company:</strong> ${application.job.company.name}</p>
+          </div>
+          <div style="background:#fef3c7;padding:14px;border-radius:8px;margin:20px 0;">
+            <p style="color:#92400e;margin:0;font-size:14px;">
+              <strong>📝 Quick Tips:</strong><br/>
+              • Join 5 minutes early<br/>
+              • Test your audio &amp; video beforehand<br/>
+              • Keep a copy of your resume ready<br/>
+              • Dress professionally and good luck!
+            </p>
+          </div>
+          <p style="color:#374151;font-size:16px;">We look forward to speaking with you!</p>
+          <p style="color:#6b7280;font-size:13px;border-top:1px solid #e5e7eb;padding-top:16px;margin-top:24px;">
+            Best regards,<br/><strong>${application.job.company.name} Recruiting Team</strong>
+          </p>
+        </div>
+      `;
+
+      await sendEmail(
+        entry.applicantEmail,
+        `Interview Invitation: ${application.job.title} at ${application.job.company.name}`,
+        html
+      );
+
+      scheduled++;
+    } catch (err) {
+      failed++;
+      errors.push(`${entry.applicantName}: ${err instanceof Error ? err.message : 'unknown error'}`);
+    }
+  }
+
+  revalidatePath('/dashboard');
+  revalidatePath('/my-applications');
+
+  return { success: scheduled > 0, scheduled, failed, errors };
+}
