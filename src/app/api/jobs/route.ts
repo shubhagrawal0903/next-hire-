@@ -87,9 +87,6 @@ export async function POST(request: Request) {
 
 export async function GET(request: Request) {
   try {
-    // Define pagination constant
-    const JOBS_PER_PAGE = 8;
-
     // Get userId from Clerk auth (await is required in Next.js 15+)
     const authResult = await auth();
     const userId = authResult?.userId;
@@ -97,16 +94,18 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const companyId = searchParams.get("companyId");
     const employmentType = searchParams.get("employmentType");
-    const status = searchParams.get("status") || "active"; // Default to active
-    const mine = searchParams.get("mine"); // New parameter to filter by current user
+    const mine = searchParams.get("mine"); // Filter to only the current user's jobs
     const rawSearch = searchParams.get("search");
     const search = rawSearch?.trim();
     const page = searchParams.get("page") || "1";
     const pageNum = parseInt(page) || 1;
+    const limitParam = searchParams.get("limit");
+    const limit = limitParam ? parseInt(limitParam) : mine ? 9 : 8; // 9 per page for "my jobs", 8 elsewhere
     const excludeIds = searchParams.get("excludeIds")?.split(',').filter(id => id.trim()) || [];
 
     // Build filter object for Prisma query
-    const where: any = { status }; // Use Prisma.JobWhereInput type if possible
+    // When fetching the user's own jobs, do NOT restrict by status so all postings appear
+    const where: any = mine ? {} : { status: searchParams.get("status") || "active" };
 
     // Filter by userId if 'mine' parameter is present and user is authenticated
     if (mine && userId) {
@@ -118,7 +117,6 @@ export async function GET(request: Request) {
     }
 
     if (employmentType) {
-      // Use case-insensitive search if needed, depends on DB collation
       where.employmentType = employmentType;
     }
 
@@ -131,8 +129,6 @@ export async function GET(request: Request) {
 
     // If a search term is provided, add an OR condition for title, description or location
     if (search) {
-      // Ensure existing filters are combined with the search OR using AND
-      // e.g., { ...existingFilters..., AND: [ { OR: [ {title: {contains}}, ... ] } ] }
       where.AND = [
         ...(where.AND || []),
         {
@@ -145,11 +141,10 @@ export async function GET(request: Request) {
       ];
     }
 
-    // Get total count of jobs matching the filters (before fetching with company include)
+    // Get total count of jobs matching the filters
     const totalJobs = await prisma.job.count({ where });
 
     // Fetch jobs with selected company information and pagination
-    // Only fetch jobs that have a valid company relation
     const jobs = await prisma.job.findMany({
       where: {
         ...where,
@@ -158,20 +153,21 @@ export async function GET(request: Request) {
         },
       },
       include: {
-        company: { // Include related company data
-          select: { // Select only necessary fields
+        company: {
+          select: {
             id: true,
             name: true,
             logoUrl: true,
-            // Add any other company fields you need on the job card/modal
           },
         },
       },
       orderBy: {
-        postedAt: "desc", // Show newest jobs first
+        // For the user's own jobs list, sort by creation date (newest first)
+        // For public listings, sort by posting date
+        createdAt: "desc",
       },
-      take: JOBS_PER_PAGE,
-      skip: (pageNum - 1) * JOBS_PER_PAGE,
+      take: limit,
+      skip: (pageNum - 1) * limit,
     });
 
     return NextResponse.json({ jobs, totalJobs }, { status: 200 });
