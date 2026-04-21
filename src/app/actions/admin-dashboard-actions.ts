@@ -61,10 +61,13 @@ export async function getAdminDashboardStats(): Promise<AdminDashboardStats> {
             }
         });
 
-        const appsByStatus = statusGroups.map(group => ({
-            name: group.status,
-            value: group._count.status
-        }));
+        // Normalize to uppercase and merge duplicates caused by mixed-case DB values
+        const statusMap = statusGroups.reduce<Record<string, number>>((acc, group) => {
+            const status = group.status.toUpperCase();
+            acc[status] = (acc[status] ?? 0) + group._count.status;
+            return acc;
+        }, {});
+        const appsByStatus = Object.entries(statusMap).map(([name, value]) => ({ name, value }));
 
         return {
             totalUsers,
