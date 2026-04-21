@@ -10,8 +10,11 @@ export default function CompanyOnboardingPage() {
 
   const handleRegisterCompany = () => {
     setSelectedOption("register");
+    // Store in localStorage as fallback for email sign-up
     localStorage.setItem('selectedRole', 'client');
-    router.push('/sign-up');
+    // Use forceRedirectUrl so Google OAuth also lands on /auth-callback?role=client
+    const callbackUrl = encodeURIComponent('/auth-callback?role=client');
+    router.push(`/sign-up?forceRedirectUrl=${callbackUrl}`);
   };
 
   const handleExistingCompany = () => {

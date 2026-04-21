@@ -91,15 +91,22 @@ export async function POST(req: Request) {
 
       console.log('[Webhook] UserProfile created:', userProfile.id)
 
-      // Update Clerk user metadata with default APPLICANT role
+      // Only set default role if one hasn't already been assigned
+      // (e.g. update-role may have fired before the webhook for fast OAuth flows)
       const client = await clerkClient()
-      await client.users.updateUserMetadata(id, {
-        publicMetadata: {
-          role: 'APPLICANT',
-        },
-      })
+      const clerkUser = await client.users.getUser(id)
+      const existingRole = clerkUser.publicMetadata?.role as string | undefined
 
-      console.log('[Webhook] User role set to APPLICANT for:', id)
+      if (!existingRole) {
+        await client.users.updateUserMetadata(id, {
+          publicMetadata: {
+            role: 'JOB_SEEKER',
+          },
+        })
+        console.log('[Webhook] User role set to JOB_SEEKER for:', id)
+      } else {
+        console.log('[Webhook] User already has role:', existingRole, '— skipping default assignment for:', id)
+      }
 
       return NextResponse.json(
         { 

@@ -29,11 +29,14 @@ export default function Header() {
 
     // Get user role from public metadata
     const role = user?.publicMetadata?.role as string | undefined;
+    const isCompany = role === 'COMPANY_ERP' || role === 'client';
+    const isJobSeeker = role === 'JOB_SEEKER' || role === 'user' || role === 'APPLICANT';
+    const isAdmin = role === 'ADMIN' || role === 'admin';
 
     // Check if company user has a company
     useEffect(() => {
         const checkCompany = async () => {
-            if (isSignedIn && role === 'COMPANY_ERP' && user?.id) {
+            if (isSignedIn && isCompany && user?.id) {
                 try {
                     console.log('Checking company for role:', role);
                     console.log('Current User ID:', user.id); // Log userId before fetch
@@ -63,7 +66,7 @@ export default function Header() {
         if (isLoaded && user) {
             checkCompany();
         }
-    }, [isSignedIn, role, isLoaded, user?.id, pathname]);
+    }, [isSignedIn, isCompany, isLoaded, user?.id, pathname]);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -102,27 +105,15 @@ export default function Header() {
                 {/* Show based on role and auth status */}
                 {isLoaded && (
                     <>
-                        {/* Admin Link - visible only to ADMIN users and prioritized for discoverability */}
-                        {isSignedIn && (role === 'ADMIN' || role === 'admin') && (
+                        {/* Admin Link */}
+                        {isSignedIn && isAdmin && (
                             <Link href="/admin" className="text-nav-link hover:text-nav-link-hover font-medium transition-nh">
                                 Admin Panel
                             </Link>
                         )}
 
                         {/* Job Seeker Links */}
-                        {isSignedIn && role === 'JOB_SEEKER' && (
-                            <>
-                                <Link href="/" className="text-nav-link hover:text-nav-link-hover font-medium transition-nh">
-                                    Jobs
-                                </Link>
-                                <Link href="/my-applications" className="text-nav-link hover:text-nav-link-hover font-medium transition-nh">
-                                    My Applications
-                                </Link>
-                            </>
-                        )}
-
-                        {/* User role Links */}
-                        {isSignedIn && role === 'user' && (
+                        {isSignedIn && isJobSeeker && (
                             <>
                                 <Link href="/" className="text-nav-link hover:text-nav-link-hover font-medium transition-nh">
                                     Jobs
@@ -134,7 +125,7 @@ export default function Header() {
                         )}
 
                         {/* Company Rep Links - Only show if user has created a company */}
-                        {isSignedIn && role === 'COMPANY_ERP' && hasCompany && (
+                        {isSignedIn && isCompany && hasCompany && (
                             <>
                                 <Link href="/dashboard" className="text-nav-link hover:text-nav-link-hover font-medium transition-nh">
                                     Dashboard
@@ -148,7 +139,7 @@ export default function Header() {
                             </>
                         )}
 
-                        {/* Show for users without role or new users - treat as Job Seeker, but not on company pages */}
+                        {/* Show for users without role - treat as Job Seeker, but not on company pages */}
                         {isSignedIn && !role && pathname !== '/add-company' && pathname !== '/company-onboarding' && (
                             <>
                                 <Link href="/" className="text-nav-link hover:text-nav-link-hover font-medium transition-nh">
@@ -206,7 +197,7 @@ export default function Header() {
                                     {user?.firstName || 'User'}
                                 </p>
                                 <p className="text-[10px] text-text-muted leading-tight truncate max-w-20">
-                                    {(role === 'ADMIN' || role === 'admin') ? 'Admin' : role === 'COMPANY_ERP' ? 'Company' : 'User'}
+                                    {isAdmin ? 'Admin' : isCompany ? 'Company' : 'User'}
                                 </p>
                             </div>
                             <ChevronDown
@@ -237,7 +228,7 @@ export default function Header() {
                                         {user?.primaryEmailAddress?.emailAddress}
                                     </p>
                                     <div className="mt-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
-                                        {(role === 'ADMIN' || role === 'admin') ? 'Administrator' : role === 'COMPANY_ERP' ? 'Company Account' : 'User'}
+                                        {isAdmin ? 'Administrator' : isCompany ? 'Company Account' : 'User'}
                                     </div>
                                 </div>
 
@@ -312,7 +303,7 @@ export default function Header() {
                             {isLoaded && (
                                 <>
                                     {/* Admin Link - visible only to ADMIN users and prioritized */}
-                                    {isSignedIn && (role === 'ADMIN' || role === 'admin') && (
+                                    {isSignedIn && isAdmin && (
                                         <Link
                                             href="/admin"
                                             className="block px-4 py-3 text-text-primary hover:bg-primary/10 rounded-lg transition-nh font-medium"
@@ -323,27 +314,7 @@ export default function Header() {
                                     )}
 
                                     {/* Job Seeker Links */}
-                                    {isSignedIn && role === 'JOB_SEEKER' && (
-                                        <>
-                                            <Link
-                                                href="/"
-                                                className="block px-4 py-3 text-text-primary hover:bg-primary/10 rounded-lg transition-nh font-medium"
-                                                onClick={() => setShowMobileMenu(false)}
-                                            >
-                                                Jobs
-                                            </Link>
-                                            <Link
-                                                href="/my-applications"
-                                                className="block px-4 py-3 text-text-primary hover:bg-primary/10 rounded-lg transition-nh font-medium"
-                                                onClick={() => setShowMobileMenu(false)}
-                                            >
-                                                My Applications
-                                            </Link>
-                                        </>
-                                    )}
-
-                                    {/* User role Links */}
-                                    {isSignedIn && role === 'user' && (
+                                    {isSignedIn && isJobSeeker && (
                                         <>
                                             <Link
                                                 href="/"
@@ -363,7 +334,7 @@ export default function Header() {
                                     )}
 
                                     {/* Company Rep Links - Only show if user has created a company */}
-                                    {isSignedIn && role === 'COMPANY_ERP' && hasCompany && (
+                                    {isSignedIn && isCompany && hasCompany && (
                                         <>
                                             <Link
                                                 href="/dashboard"
