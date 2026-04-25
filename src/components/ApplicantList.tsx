@@ -133,7 +133,7 @@ export default function ApplicantList({
       const url = selectedJobId
         ? `/api/applications/company/${companyId}?jobId=${selectedJobId}`
         : `/api/applications/company/${companyId}`;
-      const response = await fetch(url);
+      const response = await fetch(url, { cache: 'no-store' });
       if (response.status === 200) {
         const data = await response.json();
         setApplications(data || []);

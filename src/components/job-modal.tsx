@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useUser, SignInButton } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
 import { Job } from '@/types/job';
 import { X, MapPin, Building2, Clock, ExternalLink, DollarSign, UploadCloud, FileText } from 'lucide-react';
 import { format } from 'date-fns';
@@ -14,6 +15,7 @@ type JobModalProps = {
 };
 
 export default function JobModal({ job, open, onClose }: JobModalProps) {
+  const router = useRouter();
   const [isApplying, setIsApplying] = useState(false);
   const [applicationStatus, setApplicationStatus] = useState<'idle' | 'success' | 'error' | 'already_applied'>('idle');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -156,6 +158,9 @@ export default function JobModal({ job, open, onClose }: JobModalProps) {
         setApplicationStatus('success');
         setSelectedFile(null);
         setCoverLetter('');
+        // Invalidate the Next.js router cache so the company dashboard
+        // re-fetches fresh application data without a full page reload.
+        router.refresh();
       } else if (response.status === 409) {
         setApplicationStatus('already_applied');
       } else if (response.status === 400 || response.status === 401) {

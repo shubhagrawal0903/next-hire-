@@ -101,8 +101,11 @@ export async function GET(
       },
     });
 
-    // Return the list of applications
-    return NextResponse.json(applications, { status: 200 });
+    // Return the list of applications — always fresh, never cached
+    return NextResponse.json(applications, {
+      status: 200,
+      headers: { 'Cache-Control': 'no-store' },
+    });
   } catch (error) {
     console.error("Error fetching company applications:", error);
     return NextResponse.json(
