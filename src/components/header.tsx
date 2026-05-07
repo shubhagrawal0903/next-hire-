@@ -98,7 +98,7 @@ export default function Header() {
                         className="h-full w-full object-cover"
                     />
                 </div>
-                <span className="text-2xl font-bold tracking-wide text-text-primary">Career-Bridge</span>
+                <span className="text-2xl font-bold tracking-wide text-text-primary">Next-Hire</span>
             </Link>
             {/* Navigation Links - Desktop */}
             <nav className="hidden md:flex items-center gap-6">
